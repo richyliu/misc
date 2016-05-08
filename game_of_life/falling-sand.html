@@ -1,0 +1,85 @@
+<html>
+
+<head>
+    <title>Conway's Game of Life</title>
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+</head>
+
+<body>
+
+    <script src="http://apcs.io/js/apcs.js"></script>
+
+    <script type="text/javascript">
+        /* global Window */
+        
+        Window.screen();
+        Window.setFrameRate(30);
+
+        function generateWorld() {
+            var x = [];
+            for (var i = 0; i < Window.width(); i++) {
+                var y = [];
+                for (var j = 0; j < Window.height(); j++) {
+                    y.push([false, false]);
+                }
+                x.push(y);
+            }
+            return x;
+        }
+
+        var world = generateWorld();
+        var current = 0;
+        var next = 1;
+
+        function draw() {
+            Window.out.background("black");
+            Window.out.color("tan");
+            for (var x = 0; x < world.length; x++) {
+                for (var y = 0; y < world[0].length; y++) {
+                    if (world[x][y][current]) {
+                        Window.out.square(x * size + size / 2, y * size + size / 2, size);
+                    }
+                }
+            }
+        }
+
+        function calculateNext() {
+            for (var x = 0; x < world.length; x++) {
+                for (var y = 0; y < world[0].length; y++) {
+                    world[x][y][next] = false;
+                    
+                    if (world[x][y][current] && y + 1 < world[0].length && ! world[x][y + 1][current]) {
+                        world[x][y + 1][next] = true;
+                    } else {
+                        world[x][y][next] = true;
+                    }
+                }
+            }
+            // toggle current and next
+            current = (1 + current) % 2;
+            next = (1 + next) % 2;
+        }
+        
+        function generate(x, y, count) {
+            for (var i = 0; i < count; i++) {
+                world[x + Window.rollDice(11) - 6][y + Window.rollDice(11) - 6][current] = true;
+            }
+        }
+        
+        function mouseGenerate() {
+            if (Window.mouse.clicked()) {
+                generate(Window.mouse.getX(), Window.mouse.getY(), 10);
+            }
+        }
+        
+        document.onmouseclick = mouseGenerate();
+
+        Window.frame(draw);
+        Window.frame(calculateNext);
+    </script>
+
+</body>
+
+</html>
