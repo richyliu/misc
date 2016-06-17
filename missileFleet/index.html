@@ -1,0 +1,143 @@
+<html>
+
+<head>
+    <title>MISSILE FLEET</title>
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+    
+    <script src="cake.js"></script>
+    <script src="support.js"></script>
+    <script src="main.js"></script>
+    
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        body {
+            font-size: 12px;
+            font-family: Arial, Helvetica;
+            background: #23262C;
+            color: #828292;
+        }
+        
+        a {
+            color: #8282c2;
+        }
+        
+        h1 {
+            color: #727282;
+            letter-spacing: 20px;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        
+        h2 {
+            color: #727282;
+            letter-spacing: 18px;
+            margin-left: 9px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 12px;
+            font-family: Trebuchet MS, Arial, Helvetica;
+            color: #827262;
+            margin-bottom: 8px;
+            margin-top: 8px;
+        }
+        
+        ol {
+            color: #827262;
+            text-align: center;
+            list-style: none;
+        }
+        
+        li h3 {
+            margin: 0px;
+            margin-bottom: 4px;
+        }
+        
+        .message h1,
+        .message h2 {
+            margin-left: 0px;
+            letter-spacing: 0px;
+            margin-bottom: 20px;
+        }
+        
+        .message div {
+            margin-bottom: 50px;
+        }
+        
+        div.message {
+            width: 360px;
+        }
+        
+        .message {
+            text-align: center;
+            color: #827262;
+            font-size: 12px;
+        }
+        
+        input {
+            margin-right: 4px;
+        }
+        
+        #debug p {
+            margin-bottom: 4px;
+        }
+        
+        #debug div {
+            margin-bottom: 8px;
+        }
+        
+        #screen {
+            width: 640px;
+            height: 480px;
+            position: absolute;
+            cursor: default;
+            overflow: hidden;
+            left: 40px;
+            top: 40px;
+        }
+        
+        #debug {
+            color: #828292;
+            font-size: 12px;
+            position: absolute;
+            left: 690px;
+            max-width: 300px;
+            top: 32px;
+        }
+        
+        #debug canvas {
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="debug">
+        <h3>Real-time tactics game / browser benchmark</h3>
+        <p>Find the right tactic to take out the blue fleet.</p>
+        <p>Controls: click, shift-click, drag-select.</p>
+        <p>The lines tell you what the ship is doing.</p>
+        <p>The size of the colored triangle tells the ship's level.</p>
+        <p>Some levels need a good deal of luck, so keep trying.</p>
+        
+        <h3>Compatibility</h3>
+        <p>Made with <a href="canvas.html">CAKE</a>, so only works on browsers that have canvas support (Firefox 2+, Safari, Opera 9.5.)</p>
+        <p>Tested on: Firefox 2, Firefox 3, Safari 3 (Windows Beta), Safari Webkit nightly</p>
+        <p>Fastest on Webkit nightly.</p>
+        
+        <h3>Released under <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a></h3>
+    </div>
+    
+    <script>init();</script>
+
+</body>
+
+</html>

@@ -1,0 +1,13 @@
+CACHE MANIFEST
+# 2016-04-17:v1
+
+CACHE:
+index.html
+js/main.js
+css/main.css
+bower_components/Framework7/dist/js/framework7.min.js
+bower_components/Framework7/dist/css/framework7.ios.min.css
+bower_components/Framework7/dist/css/framework7.ios.colors.min.css
+
+NETWORK:
+*

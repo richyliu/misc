@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html manifest="app.appcache">
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="transparent">
+    
+    <title>Reminders</title>
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+    
+    <!-- Path to Framework7 iOS CSS theme styles-->
+    <link rel="stylesheet" href="bower_components/Framework7/dist/css/framework7.ios.min.css">
+    <!-- Path to Framework7 iOS related color styles -->
+    <link rel="stylesheet" href="bower_components/Framework7/dist/css/framework7.ios.colors.min.css">
+    
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    
+    <div class="panel panel-left panel-cover layout-dark">
+        <div class="content-block-title">Left Panel</div>
+        <div class="content-block">
+            <p>
+                This is a side panel. You can close it by clicking outsite or on this link: <a href="#" class="close-panel">close me</a>. You can put here
+                anything, even another isolated view like in <strike>Right Panel</strike></a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left"></div>
+                    <div class="center sliding">Reminders</div>
+                    <div class="right"><a href="#" class="open-panel link icon-only"><i class="icon icon-bars"></i></a></div>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <div class="toolbar-inner"><a href="#" class="link">Dummy Link</a><a href="#" data-popover=".popover-menu" class="open-popover link">Menu</a></div>
+            </div>
+            
+            <div class="pages navbar-through toolbar-through">
+                <div data-page="index" class="page">
+                    <div class="page-content pull-to-refresh-content">
+                        <div class="pull-to-refresh-layer">
+                            <div class="preloader"></div>
+                            <div class="pull-to-refresh-arrow"></div>
+                        </div>
+                        
+                        <div class="list-block">
+                            <ul>
+                                <li>
+                                    <a href="reminders.html" class="item-link">
+                                        <div class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title">Reminders</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--.page-content-->
+                </div>
+                <!--.page-->
+            </div>
+            <!--.pages .navbar-through .toolbar-through-->
+        </div>
+        <!--.view .view-main-->
+    </div>
+    <!--.views-->
+    
+    
+    <script type="text/javascript" src="bower_components/Framework7/dist/js/framework7.min.js"></script>
+    
+    <script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>
