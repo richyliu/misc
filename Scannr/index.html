@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="transparent">
+    
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicons/apple-touch-icon-180x180.png">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicons/apple-touch-icon-152x152.png">
+    <link rel="icon" type="image/png" href="favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicons/favicon-16x16.png" sizes="16x16">
+    
+    <title>Scannr</title>
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+    
+    <!-- Path to Framework7 iOS CSS theme styles-->
+    <link rel="stylesheet" href="bower_components/Framework7/dist/css/framework7.ios.min.css">
+    <!-- Path to Framework7 iOS related color styles -->
+    <link rel="stylesheet" href="bower_components/Framework7/dist/css/framework7.ios.colors.min.css">
+    
+    <!--cropperjs-->
+    <link rel="stylesheet" href="css/cropper.min.css">
+    
+    <link rel="stylesheet" href="css/main.css">
+    
+</head>
+
+<body orient="portrait">
+    
+    <!-- Status bar overlay for full screen mode (PhoneGap) -->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+    
+    <!-- Views -->
+    <div class="views">
+        <!-- Your main view, should have "view-main" class -->
+        <div class="view view-main">
+            
+            <!-- Top Navbar-->
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                    <div class="center sliding">Scannr</div>
+                    <div class="right">
+                    <!-- 
+                        Right link contains only icon - additional "icon-only" class
+                        Additional "open-panel" class tells app to open panel when we click on this link
+                    -->
+                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+            <div class="pages navbar-through toolbar-through">
+                <!-- Page, "data-page" contains page name -->
+                <div data-page="index" class="page">
+                    <!-- Scrollable page content -->
+                    <div class="page-content pull-to-refresh-content">
+                        <div class="pull-to-refresh-layer">
+                            <div class="preloader"></div>
+                            <div class="pull-to-refresh-arrow"></div>
+                        </div>
+                        <div class="content-block">
+                            <p>
+                                Welcome to Scannr! Take a photo or choose a photo from your library to begin.
+                                <!-- Link to another page -->
+                                <a href="anotherf7.html">About this app</a>
+                            </p>
+                            <div id="input">
+                                <p>
+                                    <div>
+                                        <label for="img-input">
+                                            <img src="https://maxcdn.icons8.com/iOS7/PNG/100/Photo_Video/compact_camera-100.png" width="50px" title="Upload">
+                                        </label>
+                                        <input id="img-input" type="file" accept="image/*" style="display: none">
+                                    </div>
+                                    <p>Crop the image below. Once you are done click <a onclick="doneCropping()">ok</a></p>
+                                    <div>
+                                        <img id="temp">
+                                    </div>
+                                </p>
+                            </div>
+                            <div id="output" style="display: none">
+                                <p id="calculating"></p>
+                                <p id="result"></p>
+                            </div>
+                        </div>
+                        <!--.content-block-->
+                    </div>
+                    <!--.page-content-->
+                </div>
+                <!--.page-->
+            </div>
+            <!--.pages .navbar-through .toolbar-through-->
+            
+            <!-- Bottom Toolbar-->
+            <div class="toolbar">
+                <div class="toolbar-inner">
+                    <!-- Toolbar links -->
+                    <a href="#" class="link">Link 1</a>
+                    <a href="#" class="link">Link 2</a>
+                </div>
+            </div>
+        </div>
+        <!--.views .views-main-->
+    </div>
+    <!--.views-->
+    
+    <!-- Framework7 Library JS-->
+    <script src="bower_components/Framework7/dist/js/framework7.min.js"></script>
+    
+    <!--OCRAD-->
+    <script src="js/ocrad.js"></script>
+    
+    <!--cropperjs-->
+    <script src="js/cropper.min.js"></script>
+    
+    <script src="js/main.js"></script>
+</body>
+
+</html>
