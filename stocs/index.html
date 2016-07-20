@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>stocs</title>
+    </head>
+    <body>
+        
+        <script>
+            class StockTracker {
+                constructor (amount, stockid, time) {
+                    this.time = time || new Date();
+                    this.amount = amount;
+                    this.stockid = stockid;
+                    
+                    this.util = new Util();
+                    this.TYPE = {
+                        OPEN: 1,
+                        HIGH: 2,
+                        LOW: 3,
+                        CLOSE: 4
+                    };
+                }
+                
+                
+                getStockTotal(callback) {
+                    this.getStockPrice(this.time, this.stockid, this.TYPE.CLOSE, function (price) {
+                        callback(this.amount * price);
+                    });
+                }
+                
+                
+                getStockPrice(time, stockid, type, callback) {
+                    // http://stackoverflow.com/questions/754593/source-of-historical-stock-data#answer-2152127
+                    
+                    this.util.getStockPriceFromTimeRange(time, time, stockid, type, function (resp) {
+                        callback(resp);
+                    });
+                }
+            }
+            
+            
+            
+            class Util {
+                constructor () {}
+                
+                
+                getStockIdFromName(stockName, callback) {
+                    // http://stackoverflow.com/questions/885456/stock-ticker-symbol-lookup-api
+                    // http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=toyota&region=1&lang=en&callback=main
+                    
+                }
+                
+                
+                getStockPriceFromTimeRange(begin, end, stockid, type, callback) {
+                    // $.getJSON('http://query.yahooapis.com/v1/public/yql', 'q='
+                    //     + encodeURIComponent('select * from yahoo.finance.historicaldata where symbol in ("'
+                    //         + stockid
+                    //         + '") and startDate = "'
+                    //         + begin.toISOString().slice(0,10)
+                    //         + '" and endDate = "'
+                    //         + end.toISOString().slice(0,10)
+                    //         + '"')
+                    //     + "&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json", function() {
+                            
+                    //     });
+                    
+                    
+                    this.jsonp('http://query.yahooapis.com/v1/public/yql?'
+                        + 'q='
+                        + encodeURIComponent('select * from yahoo.finance.historicaldata where symbol in ("'
+                            + stockid
+                            + '") and startDate = "'
+                            + begin.toISOString().slice(0,10)
+                            + '" and endDate = "'
+                            + end.toISOString().slice(0,10)
+                            + '"')
+                        + "&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json", function(data) {
+                        console.log(data);
+                    });
+                    
+                    
+                    // var request = new XMLHttpRequest();
+                    // request.open('GET', 'http://ichart.finance.yahoo.com/table.csv?s=' + stockid + '&d=' + beginDay + '&e=' + beginMonth + '&f=' + beginYear + '&g=d&a=' + endDay + '&b=' + endMonth + '&c=' + endYear + '&ignore=.csv', true);
+
+                    // request.onload = (function(type) {
+                    //     return function() {
+                    //         if (this.status >= 200 && this.status < 400) {
+                    //             // Success!
+                    //             var resp = this.response;
+                    //             resp = resp.trim().split('\n').slice(1);
+                                
+                    //             var returnArray = [];
+                    //             for (var i = 0; i < resp.length; i++) {
+                    //                 returnArray.push(resp[i].split(',')[type]);
+                    //             }
+                                
+                    //             console.log(returnArray);
+                    //             callback(returnArray);
+                    //         } else {
+                    //             console.error('xhr error in getStockPriceFromTimeRange');
+                    //         }
+                    //     };
+                    // }(type));
+
+                    // request.onerror = function() {
+                    //     console.error('xhr connection error in getStockPriceFromTimeRange');
+                    // };
+
+                    // request.send();
+                }
+                
+                
+                jsonp(url, callback) {
+                    var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+                    window[callbackName] = function(data) {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        callback(data);
+                    };
+
+                    var script = document.createElement('script');
+                    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+                    document.body.appendChild(script);
+                }
+            }
+            
+            
+            
+            var stock = new StockTracker(5, 'AAPL');
+            console.log(stock.getStockTotal(function (total) {
+                console.log(total);
+            }));
+        </script>
+    </body>
+</html>
