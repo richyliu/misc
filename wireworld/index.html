@@ -19,8 +19,8 @@
             }
             
             .row {
-                margin-top: -4px;
-                margin-bottom: -8px;
+                height: 10px;
+                display: flex;
             }
         </style>
     </head>
@@ -28,86 +28,6 @@
         
         <div id="grid"></div>
         
-        <script>
-            // create grid
-            
-            var WIDTH = 50;
-            var HEIGHT = 50;
-            var block, row, gridElement = document.getElementById('grid');
-            var cursorType;
-            var grid = [];
-            var TYPES = {
-                empty: 0,
-                wire: 1,
-                head: 2,
-                tail: 3,
-            };
-            
-            
-            for (var i = 0; i < HEIGHT; i++) {
-                row = document.createElement('div');
-                row.classList.add('row');
-                grid.push([]);
-                
-                for (var j = 0; j < WIDTH; j++) {
-                    block = document.createElement('div');
-                    block.classList.add('block');
-                    block.style.backgroundColor = 'white';
-                    row.appendChild(block);
-                    grid[i].push(0);
-                }
-                
-                gridElement.appendChild(row);
-            }
-            
-            // end create grid
-            
-            
-            refreshGrid();
-            
-            
-            
-            
-            function refreshGrid() {
-                var color, row, block, gridElement = document.getElementById('grid');
-                
-                
-                for (var i = 0; i < HEIGHT; i++) {
-                    row = gridElement.childNodes[i];
-                    
-                    for (var j = 0; j < WIDTH; j++) {
-                        block = row.childNodes[j];
-                        
-                        switch (grid[i][j]) {
-                            case TYPES.empty:
-                                color = 'black';
-                                break;
-                                
-                            case TYPES.wire:
-                                color = 'gold';
-                                break;
-                                
-                            case TYPES.head:
-                                color = 'red';
-                                break;
-                                
-                            case TYPES.tail:
-                                color = 'yellow';
-                                break;
-                            
-                            default:
-                                throw new TypeError('Invalid block type');
-                        }
-                        block.style.backgroundColor = color;
-                    }
-                }
-            }
-            
-            
-            function switchCursorType(type) {
-                cursorType = type;
-            }
-            
-        </script>
+        <script src="main.js"></script>
     </body>
 </html>
