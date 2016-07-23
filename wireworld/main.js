@@ -16,13 +16,14 @@ var grid = [];
 var heads = [];
 var markedForRemoval = [];
 var currentType = TYPES.wire;
+var mouseIsMoving = false;
 
 
 
 
 createGrid();
-// mainLoop();
-// bindEventHandlers();
+mainLoop();
+bindEventHandlers();
 
 // setTimeout(mainLoop(), TICK_LENGTH);
 
@@ -74,7 +75,7 @@ function mainLoop() {
         headIndiciesToRemove.push(i);
         
         if (deleteTail) {
-            markedForRemoval.push([y, x])
+            markedForRemoval.push([y, x]);
         }
     }
     
@@ -92,9 +93,31 @@ function mainLoop() {
 
 
 function bindEventHandlers() {
-    document.getElementById('grid').onclick = function(e) {
-        var y = e.target.id.split(',')[0];
-        var x = e.target.id.split(',')[1];
+    // document.getElementById('grid').onclick = function (e) {
+    //     var ele = e.target;
+        
+    //     clickedGrid(ele.id.split(',')[0], ele.id.split(',')[1]);
+    // };
+    
+    document.getElementById('grid').onmousedown = function (e) {
+        mouseIsMoving = true;
+        onmousemove(e);
+    };
+    
+    document.getElementById('grid').onmousemove = onmousemove;
+    
+    document.getElementById('grid').onmouseup = function () {
+        mouseIsMoving = false;
+    };
+    
+    function onmousemove(e) {
+        if (!mouseIsMoving) return;
+        var ele = document.elementFromPoint(e.clientX, e.clientY);
+        
+        clickedGrid(ele.id.split(',')[0], ele.id.split(',')[1]);
+    }
+    
+    function clickedGrid(y, x) {
         console.log(y + ', ' + x);
         
         if (currentType === TYPES.head) {
@@ -103,7 +126,7 @@ function bindEventHandlers() {
         
         grid[y][x] = currentType;
         repaint();
-    };
+    }
 }
 
 
