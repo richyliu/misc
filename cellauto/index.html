@@ -5,25 +5,41 @@
     </head>
     <body>
         
+        <canvas id="main"></canvas>
         
-        <script src="https://cdn.jsdelivr.net/terra/latest/mainfile"></script>
-        
+        <script src="https://cdn.rawgit.com/sanojian/cellauto/bb597ceab5791a08a723d74cddb3a44e407565f1/dist/cellauto.min.js"></script>
+        <script src="main.js"></script>
+    
         <script>
-            terra.registerCreature({
-                type: 'secondCreature',
-                color: [120, 0, 240],
-                sustainability: 6,
-                reproduceLv: 1
-            });
+            /* global world */
             
-            terra.registerCreature({
-                type: 'simplePlant',
-                color: [166, 226, 46],
-                size: 10,
-                reproduceLv: 0.8,
-                wait: () => this.energy += 3,
-                move: false
-            });
+            
+            var canvas = document.getElementById('main');
+            canvas.width = world.cellSize * world.width;
+            canvas.height = world.cellSize * world.height;
+            var ctx = canvas.getContext('2d');
+            
+            
+            function draw() {
+                for (var y = 0; y < world.height; y++) {
+                    for (var x = 0; x < world.width; x++) {
+                        ctx.fillStyle = 'rgba(' + world.palette[world.grid[y][x].getColor()] + ')';
+                        // console.log(world.palette[world.grid[y][x].getColor()]);
+                        ctx.fillRect(x * world.cellSize, y * world.cellSize, world.cellSize, world.cellSize);
+                    }
+                }
+            }
+            
+            function step() {
+                draw();
+                world.step();
+            }
+            
+            
+            setInterval(function() {
+                step();
+            }, 50);
         </script>
+    
     </body>
 </html>
