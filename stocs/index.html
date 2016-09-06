@@ -13,9 +13,12 @@
         
         <script>
             /* global StockTracker */
+            /* global Portfolio */
             /* global Util */
-            /* global Highcharts */
             
+            
+            
+            var portfolio = new Portfolio(10000);
             
             var stock = new StockTracker(1, 'AAPL', new Date('2016-01-01'));
             stock.getStockAmountEarned(function (total) {
@@ -30,30 +33,11 @@
                 console.log('current stock total ' + total);
             });
             
+            portfolio.addStockTracker(stock);
             
-            Util.getStockPriceAndTimestamp(new Date('2016-01-01'), new Date('2016-07-20'), 'AAPL', Util.TYPES().CLOSE, function(data) {
-                console.log(data);
-                
-                
-                new Highcharts.StockChart({
-                    chart: {
-                        renderTo: 'graph'
-                    },
-                    rangeSelector: {
-                        selected: 1
-                    },
-                    title: {
-                        text: 'AAPL Stock Price'
-                    },
-                    series: [{
-                        name: 'AAPL',
-                        data: data,
-                        tooltip: {
-                            valueDecimals: 2
-                        }
-                    }]
-                });
-            });
+            
+            
+            Util.drawChart(new Date('2016-01-01'), new Date('2016-9-3'), 'AAPL', Util.TYPES().CLOSE);
             
         </script>
     </body>
