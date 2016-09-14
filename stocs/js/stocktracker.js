@@ -1,6 +1,7 @@
 /* global Highcharts */
 
 
+
 class singleTimeslotStockTracker {
     constructor(amount, ticker, time) {
         this.time = time || new Date();
@@ -8,18 +9,25 @@ class singleTimeslotStockTracker {
         this.ticker = ticker;
     }
     
+    
+    
     getDate() {
         return this.time;
     }
+    
+    
     
     getAmount() {
         return this.amount;
     }
     
+    
+    
     getTicker() {
         return this.ticker;
     }
 }
+
 
 
 
@@ -29,15 +37,37 @@ class multipleTimeslotStockTracker {
         this.totalStock = [];
     }
     
-    getTotalStock() {
+    
+    
+    getTicker() {
+        return this.ticker;
+    }
+    
+    
+    
+    getTotal() {
         return this.totalStock;
     }
     
-    buyStock(amount) {
-        this.totalStock.push(new singleTimeslotStockTracker(amount, this.ticker, new Date()));
+    
+    
+    buy(amount, date, callback) {
+        this.totalStock.push(new singleTimeslotStockTracker(amount, this.ticker, date || new Date()));
+        
+        // how much stock costs
+        Util.getStockPriceFromTimestamp(date, this.ticker, function(price) {
+            callback(amount * price);
+        });
     }
     
-    sellStock(amount) {
+    
+    
+    sell(amount, date, callback) {
+        // if no date
+        if (typeof date === 'function') {
+            callback = date;
+            date = new Date();
+        }
         var amountNeedToSell = amount;
         var soldStocks = [];
         
@@ -46,6 +76,7 @@ class multipleTimeslotStockTracker {
                 continue;
             }
             if (amountNeedToSell < this.totalStock[i].getAmount()) {
+                // subtract amountNeedToSell from the first totalStock
                 var swap = new singleTimeslotStockTracker(
                     this.totalStock[i].getAmount() - amountNeedToSell,
                     this.ticker,
@@ -53,20 +84,54 @@ class multipleTimeslotStockTracker {
                 );
                 this.totalStock[i] = swap;
                 
-                soldStocks.push(new singleTimeslotStockTracker(amountNeedToSell, this.totalStock[i].getDate()));
+                soldStocks.push(new singleTimeslotStockTracker(amountNeedToSell, this.ticker, this.totalStock[i].getDate()));
+                // sold all that needs to be sold
+                amountNeedToSell = 0
                 break;
             }
-            soldStocks.push(new singleTimeslotStockTracker(this.totalStock[i].getAmount(), this.totalStock[i].getDate()));
+            // if need more than one singeTimeslotStockTracker
+            soldStocks.push(new singleTimeslotStockTracker(this.totalStock[i].getAmount(), this.ticker, this.totalStock[i].getDate()));
+            // deduct amountNeedToSell from amount already sold
             amountNeedToSell -= this.totalStock[i].getAmount();
+            // proceed to next totalStock
             this.totalStock[i] = null;
         }
         if (amountNeedToSell > 0) {
             throw new Error('Not enough existing stocks to make sale!');
         }
         
-        return soldStocks;
+        
+        var profit = 0;
+        var soldStocksCalculated = new Array(soldStocks.length);
+        var self = this;
+        
+        // loop through all soldStocks to calculate profit
+        for (var i = 0; i < soldStocks.length; i++) {
+            // wrap in iife in order for soldStock[i].getAmount() to be used
+            Util.getStockPriceFromTimestamp(soldStocks[i].getDate(), this.ticker, (function(currentSoldStockAmount) {
+                return function(pastPrice) {
+                    // use self bc "this" referes to the function() {} scope
+                    Util.getStockPriceFromTimestamp(date, self.ticker, (function(currentSoldStockAmount) {
+                        return function(curPrice) {
+                            console.log(pastPrice - curPrice);
+                            profit += (pastPrice - curPrice) * currentSoldStockAmount;
+                            soldStocksCalculated[i] = true;
+                            
+                            for (var i = 0; i < soldStocksCalculated.length; i++) {
+                                if (!soldStocksCalculated) return;
+                            }
+                            
+                            // all soldStocks calculated
+                            callback(profit);
+                        };
+                    }(currentSoldStockAmount)));
+                };
+            }(soldStocks[i].getAmount())));
+        }
+        
     }
 }
+
 
 
 
@@ -76,6 +141,7 @@ class StockTracker extends singleTimeslotStockTracker{
 
         this.util = new Util();
     }
+
 
 
     getStockAmountEarned(callback) {
@@ -88,6 +154,7 @@ class StockTracker extends singleTimeslotStockTracker{
     }
 
 
+
     getCurrentStockTotal(callback) {
         this.getStockPrice(new Date(), this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
             return function(price) {
@@ -97,6 +164,7 @@ class StockTracker extends singleTimeslotStockTracker{
     }
 
 
+
     getInitialStockTotal(callback) {
         this.getStockPrice(this.time, this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
             return function(price) {
@@ -104,6 +172,7 @@ class StockTracker extends singleTimeslotStockTracker{
             };
         }(this.amount, callback || function() {})));
     }
+
 
 
     getStockPrice(time, ticker, type, callback) {
@@ -121,6 +190,7 @@ class StockTracker extends singleTimeslotStockTracker{
 
 
 
+
 class Portfolio {
     constructor(startingMoney) {
         this.stockTrackers = [];
@@ -128,11 +198,14 @@ class Portfolio {
     }
     
     
+    
     addStockTracker(stockTracker) {
         if (stockTracker instanceof StockTracker) {
             this.stockTrackers.push(stockTracker);
         }
     }
+    
+    
     
     
     getTotalStockMoney() {
@@ -145,6 +218,7 @@ class Portfolio {
         
         return totalStockMoney;
     }
+    
     
     
     getTotalStockProfit() {
@@ -162,6 +236,7 @@ class Portfolio {
 
 
 
+
 class Util {
     static TYPES() {
         return {
@@ -173,16 +248,18 @@ class Util {
     }
     
     
-    static gettickerFromName(stockName, callback) {
-        // http://stackoverflow.com/questions/885456/stock-ticker-symbol-lookup-api
-        // http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=toyota&region=1&lang=en&callback=main
-
-
+    
+    static getTickerFromName(stockName, callback) {
+        
+        
     }
 
 
+
     static getStockPriceFromTimeRange(begin, end, ticker, type, callback) {
-        this.jsonp('http://query.yahooapis.com/v1/public/yql?' +
+        // http://stackoverflow.com/questions/885456/stock-ticker-symbol-lookup-api
+        // http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=toyota&region=1&lang=en&callback=main
+        jsonp('http://query.yahooapis.com/v1/public/yql?' +
             'q=' +
             encodeURIComponent('select * from yahoo.finance.historicaldata where symbol in ("' +
                 ticker +
@@ -208,33 +285,52 @@ class Util {
                 }
             }
         );
+        
+        
+        function jsonp(url, callback) {
+            var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                callback(data);
+            };
+    
+            var script = document.createElement('script');
+            script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+            document.body.appendChild(script);
+        }
     }
-
-
-    static jsonp(url, callback) {
-        var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-        window[callbackName] = function(data) {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            callback(data);
-        };
-
-        var script = document.createElement('script');
-        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-        document.body.appendChild(script);
-    }
+    
     
     
     static getStockPriceAndTimestamp(begin, end, ticker, type, callback) {
         this.getStockPriceFromTimeRange(begin, end, ticker, type, function(data, rawResp) {
+            // array of 2 elements within array
             var newData = [];
             for (var i = 0; i < data.length; i++) {
+                // element 0 is the timestamp, and element 1 is the data
                 newData.push([new Date(rawResp.query.results.quote[i].Date).getTime(), parseFloat(data[i])]);
             }
             
             callback(newData.reverse());
         });
     }
+    
+    
+    
+    static getStockPriceFromTimestamp(time, ticker, type, callback) {
+        // if no type, shift arguments and default type to 'close'
+        if (typeof type === 'function') {
+            callback = type;
+            type = this.TYPES().CLOSE;
+        }
+        
+        this.getStockPriceFromTimeRange(time, time, ticker, type, function(data) {
+            // return the price of the stock
+            callback(data[0]);
+        });
+    }
+    
     
     
     static drawChart(startDate, endDate, ticker, type) {
@@ -261,5 +357,11 @@ class Util {
                 }]
             });
         });
+    }
+    
+    
+    
+    static printStackTrace() {
+        console.log((new Error()).stack);
     }
 }

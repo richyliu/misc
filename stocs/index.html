@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>stocs</title>
+        <title>Stock Tracker</title>
+        
+        <script>
+            // redirt to http protocol because using http scripts on this page
+            if (window.location.protocol === "https:") window.location.href = "http:" + window.location.href.substring(window.location.protocol.length);
+        </script>
     </head>
     <body>
         
@@ -9,36 +14,7 @@
         
         <script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
         <script src="http://code.highcharts.com/stock/highstock.js"></script>
-        <script src="stocktracker.js"></script>
-        
-        <script>
-            /* global StockTracker */
-            /* global Portfolio */
-            /* global Util */
-            
-            
-            
-            var portfolio = new Portfolio(10000);
-            
-            var stock = new StockTracker(1, 'AAPL', new Date('2016-01-01'));
-            stock.getStockAmountEarned(function (total) {
-                console.log('amount earned ' + total);
-            });
-            
-            stock.getInitialStockTotal(function (total) {
-                console.log('initial stock total ' + total);
-            });
-            
-            stock.getCurrentStockTotal(function (total) {
-                console.log('current stock total ' + total);
-            });
-            
-            portfolio.addStockTracker(stock);
-            
-            
-            
-            Util.drawChart(new Date('2016-01-01'), new Date('2016-9-3'), 'AAPL', Util.TYPES().CLOSE);
-            
-        </script>
+        <script src="js/stocktracker.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>
