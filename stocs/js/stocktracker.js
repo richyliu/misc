@@ -51,7 +51,7 @@ class multipleTimeslotStockTracker {
     
     
     
-    buy(amount, date, callback) {
+    buy(amount, date, callback = function() {}) {
         this.totalStock.push(new singleTimeslotStockTracker(amount, this.ticker, date || new Date()));
         
         // how much stock costs
@@ -62,7 +62,7 @@ class multipleTimeslotStockTracker {
     
     
     
-    sell(amount, date, callback) {
+    sell(amount, date, callback = function() {}) {
         // if no date
         if (typeof date === 'function') {
             callback = date;
@@ -102,31 +102,30 @@ class multipleTimeslotStockTracker {
         
         
         var profit = 0;
-        var soldStocksCalculated = new Array(soldStocks.length);
+        var soldStocksCalculated = new Array(soldStocks.length).fill(false);
         var self = this;
         
         // loop through all soldStocks to calculate profit
         for (var i = 0; i < soldStocks.length; i++) {
             // wrap in iife in order for soldStock[i].getAmount() to be used
-            Util.getStockPriceFromTimestamp(soldStocks[i].getDate(), this.ticker, (function(currentSoldStockAmount) {
+            Util.getStockPriceFromTimestamp(soldStocks[i].getDate(), this.ticker, (function(currentSoldStockAmount, i) {
                 return function(pastPrice) {
                     // use self bc "this" referes to the function() {} scope
-                    Util.getStockPriceFromTimestamp(date, self.ticker, (function(currentSoldStockAmount) {
+                    Util.getStockPriceFromTimestamp(date, self.ticker, (function(currentSoldStockAmount, i) {
                         return function(curPrice) {
-                            console.log(pastPrice - curPrice);
-                            profit += (pastPrice - curPrice) * currentSoldStockAmount;
+                            profit += (curPrice - pastPrice) * currentSoldStockAmount;
                             soldStocksCalculated[i] = true;
                             
-                            for (var i = 0; i < soldStocksCalculated.length; i++) {
-                                if (!soldStocksCalculated) return;
+                            for (var j = 0; j < soldStocksCalculated.length; j++) {
+                                if (!soldStocksCalculated[j]) return;
                             }
                             
                             // all soldStocks calculated
                             callback(profit);
                         };
-                    }(currentSoldStockAmount)));
+                    }(currentSoldStockAmount, i)));
                 };
-            }(soldStocks[i].getAmount())));
+            }(soldStocks[i].getAmount(), i)));
         }
         
     }
@@ -144,7 +143,7 @@ class StockTracker extends singleTimeslotStockTracker{
 
 
 
-    getStockAmountEarned(callback) {
+    getStockAmountEarned(callback = function() {}) {
         var self = this;
         this.getCurrentStockTotal(function(total) {
             self.getInitialStockTotal(function(oldTotal) {
@@ -155,27 +154,27 @@ class StockTracker extends singleTimeslotStockTracker{
 
 
 
-    getCurrentStockTotal(callback) {
+    getCurrentStockTotal(callback = function() {}) {
         this.getStockPrice(new Date(), this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
             return function(price) {
                 callback(amount * price);
             };
-        }(this.amount, callback || function() {})));
+        }(this.amount, callback)));
     }
 
 
 
-    getInitialStockTotal(callback) {
+    getInitialStockTotal(callback = function() {}) {
         this.getStockPrice(this.time, this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
             return function(price) {
                 callback(amount * price);
             };
-        }(this.amount, callback || function() {})));
+        }(this.amount, callback)));
     }
 
 
 
-    getStockPrice(time, ticker, type, callback) {
+    getStockPrice(time, ticker, type, callback = function() {}) {
         // http://stackoverflow.com/questions/754593/source-of-historical-stock-data#answer-2152127
 
         // adjust time so that conversion to utc becomes correct and subtract 1 day
@@ -249,14 +248,19 @@ class Util {
     
     
     
-    static getTickerFromName(stockName, callback) {
+    static getTickerFromName(stockName, callback = function() {}) {
+        var nasdaqCsv = PreUtil.getNasdaqCsv();
         
-        
+        for (var i = 0; i < nasdaqCsv.length; i++) {
+            if (nasdaqCsv[i][1].toLowerCase().indexOf(stockName.toLowerCase()) > -1) {
+                console.log(nasdaqCsv[i]);
+            }
+        }
     }
 
 
 
-    static getStockPriceFromTimeRange(begin, end, ticker, type, callback) {
+    static getStockPriceFromTimeRange(begin, end, ticker, type, callback = function() {}) {
         // http://stackoverflow.com/questions/885456/stock-ticker-symbol-lookup-api
         // http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=toyota&region=1&lang=en&callback=main
         jsonp('http://query.yahooapis.com/v1/public/yql?' +
@@ -271,6 +275,7 @@ class Util {
             "&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json",
             function(resp) {
                 // console.log(resp);
+                if (!resp.query.results) throw new Error('No entry found for date range ' + begin.toDateString() + ' to ' + end.toDateString());
                 if (Array.isArray(resp.query.results.quote)) {
                     var quotes = resp.query.results.quote;
 
@@ -287,7 +292,7 @@ class Util {
         );
         
         
-        function jsonp(url, callback) {
+        function jsonp(url, callback = function() {}) {
             var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
             window[callbackName] = function(data) {
                 delete window[callbackName];
@@ -303,7 +308,7 @@ class Util {
     
     
     
-    static getStockPriceAndTimestamp(begin, end, ticker, type, callback) {
+    static getStockPriceAndTimestamp(begin, end, ticker, type, callback = function() {}) {
         this.getStockPriceFromTimeRange(begin, end, ticker, type, function(data, rawResp) {
             // array of 2 elements within array
             var newData = [];
@@ -318,7 +323,8 @@ class Util {
     
     
     
-    static getStockPriceFromTimestamp(time, ticker, type, callback) {
+    static getStockPriceFromTimestamp(time, ticker, type, callback = function() {}) {
+        if (this.isMarketClosed(time)) throw new Error('Market is not open on ' + time.toDateString());
         // if no type, shift arguments and default type to 'close'
         if (typeof type === 'function') {
             callback = type;
@@ -358,10 +364,71 @@ class Util {
             });
         });
     }
+
+
+
+    static isMarketClosed(date) {
+        // saturday (6) or sunday (0)
+        return date.getDate() % 6 === 0;
+    }
     
     
     
     static printStackTrace() {
         console.log((new Error()).stack);
+    }
+}
+
+
+
+
+class PreUtil {
+    static loadAll () {
+        this.loadNasdaqCsv();
+    }
+    
+    
+    
+    static loadNasdaqCsv() {
+        // http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download
+        // http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NYSE&render=download
+        
+        
+        var request = new XMLHttpRequest();
+        request.open('GET', 'nyse.csv', true);
+        
+        request.onload = (function(self) {
+            return function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var allText = request.responseText;
+                    
+                    var allTextLines = allText.split(/\r\n|\n/);
+                    var headers = allTextLines[0].split(',');
+                    var lines = [];
+                
+                    for (var i=1; i<allTextLines.length; i++) {
+                        var data = allTextLines[i].split(',');
+                        if (data.length == headers.length) {
+                
+                            var tarr = [];
+                            for (var j=0; j<headers.length; j++) {
+                                tarr.push(data[j]);
+                            }
+                            lines.push(tarr);
+                        }
+                    }
+                    console.log(lines);
+                    self.nasdaqCsv = lines;
+                }
+            };
+        }(this));
+        
+        request.send();
+    }
+    
+    
+    
+    static getNasdaqCsv() {
+        return this.nasdaqCsv;
     }
 }

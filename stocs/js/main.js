@@ -2,7 +2,10 @@
 /* global multipleTimeslotStockTracker */
 /* global Portfolio */
 /* global Util */
+/* global PreUtil */
 
+
+PreUtil.loadAll();
 
 
 function main() {
@@ -31,9 +34,8 @@ function main() {
 
 
 function test() {
-    Util.getStockPriceFromTimeRange(new Date('2016-1-1'), new Date('2016-9-3'), 'AAPL', Util.TYPES().CLOSE, function(data) {
-        console.log(data);
-    });
+    Util.getTickerFromName('microsoft');
+    
 }
 
 
@@ -42,24 +44,28 @@ function another() {
     var stock = new multipleTimeslotStockTracker('AAPL');
     
     stock.buy(5, new Date('2016-1-4'), function(price) {
-        // console.log('Paying: $' + price + ' for 5 AAPL stocks on 1/4/2016');
+        console.log('Paying: $' + price + ' for 5 AAPL stocks on 1/4/2016');
     });
     
     stock.buy(5, new Date('2016-5-2'), function(price) {
-        // console.log('Paying: $' + price + ' for 5 AAPL stocks on 5/2/2016');
+        console.log('Paying: $' + price + ' for 5 AAPL stocks on 5/2/2016');
     });
     
     
-    Util.getStockPriceFromTimestamp(new Date('2016-1-4'), stock.getTicker(), function(price) {
-        console.log('AAPL stocks cost: $' + price + ' on 1/4/2016');
-    })
+    // Util.getStockPriceFromTimestamp(new Date('2016-1-4'), stock.getTicker(), function(price) {
+    //     console.log('AAPL stocks cost: $' + price + ' on 1/4/2016');
+    // });
     
-    Util.getStockPriceFromTimestamp(new Date('2016-7-25'), stock.getTicker(), function(price) {
-        console.log('AAPL stocks cost: $' + price + ' on 7/25/2016');
-    })
+    // Util.getStockPriceFromTimestamp(new Date('2016-5-2'), stock.getTicker(), function(price) {
+    //     console.log('AAPL stocks cost: $' + price + ' on 5/2/2016');
+    // });
+    
+    // Util.getStockPriceFromTimestamp(new Date('2016-7-25'), stock.getTicker(), function(price) {
+    //     console.log('AAPL stocks cost: $' + price + ' on 7/25/2016');
+    // });
     
     
-    stock.sell(3, new Date('2016-7-25'), function(profit) {
+    stock.sell(6, new Date('2016-7-25'), function(profit) {
         console.log('Profit: $' + profit);
     });
 }
@@ -68,4 +74,4 @@ function another() {
 
 // main();
 // test();
-another();
+// another();
