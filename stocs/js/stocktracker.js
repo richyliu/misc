@@ -248,14 +248,17 @@ class Util {
     
     
     
+    // WIP
     static getTickerFromName(stockName, callback = function() {}) {
-        var nasdaqCsv = PreUtil.getNasdaqCsv();
-        
-        for (var i = 0; i < nasdaqCsv.length; i++) {
-            if (nasdaqCsv[i][1].toLowerCase().indexOf(stockName.toLowerCase()) > -1) {
-                console.log(nasdaqCsv[i]);
+        PreUtil.runOnceTickerCsvLoaded(function() {
+            var allCsv = PreUtil.getTickerCsv();
+            
+            for (var i = 0; i < allCsv.length; i++) {
+                if (allCsv[i][1].toLowerCase().indexOf(stockName.toLowerCase()) > -1) {
+                    console.log(allCsv[i]);
+                }
             }
-        }
+        });
     }
 
 
@@ -364,6 +367,21 @@ class Util {
             });
         });
     }
+    
+    
+    
+    static XMLHttpRequest(url, callback = function() {}) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        
+        request.onload = function() {
+            if (request.status == 200 && request.readyState === 4) {
+                callback(request.responseText);
+            }
+        };
+        
+        request.send();
+    }
 
 
 
@@ -371,6 +389,14 @@ class Util {
         // saturday (6) or sunday (0)
         return date.getDate() % 6 === 0;
     }
+    
+    
+    
+    static sleep(miliseconds) {
+         var currentTime = new Date().getTime();
+    
+         while (currentTime + miliseconds >= new Date().getTime()) {}
+     }
     
     
     
@@ -384,51 +410,62 @@ class Util {
 
 class PreUtil {
     static loadAll () {
-        this.loadNasdaqCsv();
+        this.loadTickerCsv();
+        this.allTickerCsvLoaded = false;
     }
     
     
     
-    static loadNasdaqCsv() {
+    static loadTickerCsv() {
         // http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download
         // http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NYSE&render=download
         
         
-        var request = new XMLHttpRequest();
-        request.open('GET', 'nyse.csv', true);
-        
-        request.onload = (function(self) {
-            return function() {
-                if (request.status >= 200 && request.status < 400) {
-                    var allText = request.responseText;
-                    
-                    var allTextLines = allText.split(/\r\n|\n/);
-                    var headers = allTextLines[0].split(',');
-                    var lines = [];
-                
-                    for (var i=1; i<allTextLines.length; i++) {
-                        var data = allTextLines[i].split(',');
-                        if (data.length == headers.length) {
-                
-                            var tarr = [];
-                            for (var j=0; j<headers.length; j++) {
-                                tarr.push(data[j]);
-                            }
-                            lines.push(tarr);
+        Util.XMLHttpRequest('all.csv', (function(self) {
+            return function(allText) {
+                var allTextLines = allText.split(/\r\n|\n/);
+                var headers = allTextLines[0]
+                        .slice(1, -2)           // remove leading " and trailing ",
+                        .split('","');          // split with ","
+                var lines = [];
+            
+                for (var i = 1; i < allTextLines.length; i++) {
+                    var data = allTextLines[i]
+                        .slice(1, -2)           // remove leading " and trailing ",
+                        .split('","');          // split with ","
+                    if (data.length === headers.length) {
+            
+                        var tarr = [];
+                        for (var j = 0; j < headers.length; j++) {
+                            tarr.push(data[j]);
                         }
+                        lines.push(tarr);
+                    } else {
                     }
-                    console.log(lines);
-                    self.nasdaqCsv = lines;
                 }
+                console.log(lines);
+                self.allCsv = lines;
+                self.allTickerCsvLoaded = true;
             };
-        }(this));
-        
-        request.send();
+        }(this)));
     }
     
     
     
-    static getNasdaqCsv() {
-        return this.nasdaqCsv;
+    static getTickerCsv() {
+        return this.allCsv;
+    }
+    
+    
+    
+    static runOnceTickerCsvLoaded(callback = function() {}) {
+        var timer = setInterval((function(self) {
+            return function() {
+                if (self.allTickerCsvLoaded) {
+                    callback();
+                    clearInterval(timer);
+                }
+            };
+        }(this)), 20);
     }
 }

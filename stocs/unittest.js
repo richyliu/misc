@@ -1,6 +1,12 @@
 /* global QUnit */
 /* global multipleTimeslotStockTracker */
 /* global singleTimeslotStockTracker */
+/* global Util */
+/* global PreUtil */
+
+
+
+PreUtil.loadAll();
 
 
 
@@ -39,4 +45,12 @@ QUnit.test('singeTimeslotStockTracker', function(assert) {
     assert.equal(JSON.stringify(s.getDate()), '\"2016-01-04T08:00:00.000Z\"');
     assert.equal(s.getAmount(), 10);
     assert.equal(s.getTicker(), 'aapl');
+});
+
+
+
+QUnit.test('Util getTickerFromName', function(assert) {
+    console.log(Util.getTickerFromName('apple'));
+    
+    // assert.equal(Util.getTickerFromName('microsoft'), 10);
 });

@@ -33,12 +33,6 @@ function main() {
 
 
 
-function test() {
-    Util.getTickerFromName('microsoft');
-    
-}
-
-
 
 function another() {
     var stock = new multipleTimeslotStockTracker('AAPL');
