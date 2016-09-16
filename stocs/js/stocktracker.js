@@ -4,7 +4,7 @@
 
 class singleTimeslotStockTracker {
     constructor(amount, ticker, time) {
-        this.time = time || new Date();
+        this.time = time || Util.getLastValidDate();
         this.amount = amount;
         this.ticker = ticker;
         Util.getStockPriceFromTimestamp(this.time, this.ticker, (function(self) {
@@ -82,7 +82,7 @@ class multipleTimeslotStockTracker {
                     }
                     
                     // all stock price calculated
-                    callback(totalMoney);
+                    callback(Util.round(totalMoney));
                 };
             }(i, this)));
         }
@@ -99,7 +99,7 @@ class multipleTimeslotStockTracker {
                     totalPrevMoney += self.totalStock[i].getPrice() * self.totalStock[i].getAmount();
                 }
                 
-                callback(totalMoney - totalPrevMoney);
+                callback(Util.round(totalMoney - totalPrevMoney));
             };
         }(this)));
     }
@@ -107,11 +107,17 @@ class multipleTimeslotStockTracker {
     
     
     buy(amount, date, callback = function() {}) {
-        this.totalStock.push(new singleTimeslotStockTracker(amount, this.ticker, date || new Date()));
+        // if no date
+        if (typeof date === 'function') {
+            callback = date;
+            date = Util.getLastValidDate();
+        }
+        
+        this.totalStock.push(new singleTimeslotStockTracker(amount, this.ticker, date));
         
         // how much stock costs
         Util.getStockPriceFromTimestamp(date, this.ticker, function(price) {
-            callback(amount * price);
+            callback(Util.round(amount * price));
         });
     }
     
@@ -121,7 +127,7 @@ class multipleTimeslotStockTracker {
         // if no date
         if (typeof date === 'function') {
             callback = date;
-            date = new Date();
+            date = Util.getLastValidDate();
         }
         var amountNeedToSell = amount;
         var soldStocks = [];
@@ -156,7 +162,8 @@ class multipleTimeslotStockTracker {
         }
         
         
-        var profit = 0;
+        var totalCurrent = 0;
+        var totalPast = 0;
         var soldStocksCalculated = new Array(soldStocks.length).fill(false);
         var self = this;
         
@@ -168,7 +175,8 @@ class multipleTimeslotStockTracker {
                     // use self bc "this" referes to the function() {} scope
                     Util.getStockPriceFromTimestamp(date, self.ticker, (function(currentSoldStockAmount, i) {
                         return function(curPrice) {
-                            profit += (curPrice - pastPrice) * currentSoldStockAmount;
+                            totalCurrent += curPrice * currentSoldStockAmount;
+                            totalPast += pastPrice * currentSoldStockAmount;
                             soldStocksCalculated[i] = true;
                             
                             for (var j = 0; j < soldStocksCalculated.length; j++) {
@@ -176,7 +184,7 @@ class multipleTimeslotStockTracker {
                             }
                             
                             // all soldStocks calculated
-                            callback(profit);
+                            callback(Util.round(totalCurrent - totalPast), totalCurrent);
                         };
                     }(currentSoldStockAmount, i)));
                 };
@@ -189,66 +197,63 @@ class multipleTimeslotStockTracker {
 
 
 
-class StockTracker extends singleTimeslotStockTracker{
-    constructor(amount, ticker, time) {
-        super(amount, ticker, time);
-
-        this.util = new Util();
-    }
-
-
-
-    getStockAmountEarned(callback = function() {}) {
-        var self = this;
-        this.getCurrentStockTotal(function(total) {
-            self.getInitialStockTotal(function(oldTotal) {
-                callback(total - oldTotal);
-            });
-        });
-    }
-
-
-
-    getCurrentStockTotal(callback = function() {}) {
-        this.getStockPrice(new Date(), this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
-            return function(price) {
-                callback(amount * price);
-            };
-        }(this.amount, callback)));
-    }
-
-
-
-    getInitialStockTotal(callback = function() {}) {
-        this.getStockPrice(this.time, this.ticker, Util.TYPES().CLOSE, (function(amount, callback) {
-            return function(price) {
-                callback(amount * price);
-            };
-        }(this.amount, callback)));
-    }
-
-
-
-    getStockPrice(time, ticker, type, callback = function() {}) {
-        // http://stackoverflow.com/questions/754593/source-of-historical-stock-data#answer-2152127
-
-        // adjust time so that conversion to utc becomes correct and subtract 1 day
-        time = new Date(time.getTime() - time.getTimezoneOffset() * 60000 - 24 * 60 * 60 * 1000);
-
-        Util.getStockPriceFromTimeRange(time, time, ticker, type, function(resp) {
-            callback(resp[0]);
-        });
-    }
-}
-
-
-
-
-
 class Portfolio {
     constructor(startingMoney) {
         this.stockTrackers = [];
-        this.money = startingMoney;
+        this.cash = startingMoney;
+    }
+    
+    
+    
+    getCash() {
+        return this.cash;
+    }
+    
+    
+    
+    // debug only
+    setCash(cash) {
+        this.cash = cash;
+    }
+    
+    
+    getStockTrackers() {
+        return this.stockTrackers;
+    }
+    
+    
+    
+    buy(ticker, amount, date = Util.getLastValidDate()) {
+        for (var i = 0; this.stockTrackers[i]; i++) {
+            if (this.stockTrackers[i].getTicker() === ticker) {
+                this.stockTrackers[i].buy(amount, date, (function(self) {
+                    return function(cost) {
+                        // deduct cost from cash
+                        self.cash -= cost;
+                    };
+                }(this)));
+                return;
+            }
+        }
+        
+        // create stocktracker if it doesn't exist
+        this.addStockTracker(new multipleTimeslotStockTracker(ticker));
+        this.buy(ticker, amount, date);
+    }
+    
+    
+    
+    sell(ticker, amount, date = Util.getLastValidDate()) {
+        for (var i = 0; this.stockTrackers[i]; i++) {
+            if (this.stockTrackers[i].getTicker() === ticker) {
+                this.stockTrackers[i].sell(amount, date, (function(self) {
+                    return function(profit, money) {
+                        // add money to cash
+                        self.cash += money;
+                    };
+                }(this)));
+            }
+        }
     }
     
     
@@ -337,7 +342,7 @@ class Util {
                 '"') +
             "&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json",
             function(resp) {
-                console.log(resp);
+                // console.log(resp);
                 if (!resp.query.results) throw new Error('No entry found for date range ' + begin.toDateString() + ' to ' + end.toDateString());
                 if (Array.isArray(resp.query.results.quote)) {
                     var quotes = resp.query.results.quote;
@@ -345,13 +350,13 @@ class Util {
                     var data = [];
                     for (var i = 0; i < quotes.length; i++) {
                         // round numbers for consistency
-                        data.push(this.round(quotes[i][type]));
+                        data.push(Util.round(quotes[i][type]));
                     }
                     
                     callback(data, resp);
                 } else {
                     // round numbers for consistency
-                    callback(this.round([resp.query.results.quote[type]]), resp);
+                    callback([Util.round(resp.query.results.quote[type])], resp);
                 }
             }
         );
@@ -474,8 +479,14 @@ class Util {
     
     
     
+    static wait(func, seconds) {
+        setTimeout(func, seconds * 1000);
+    }
+    
+    
+    
     static round(number, decimalPoints = 4) {
-        return parseFloat(number.toFixed(decimalPoints));
+        return parseFloat(parseFloat(number).toFixed(decimalPoints));
     }
     
     
