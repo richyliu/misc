@@ -7,6 +7,11 @@ class singleTimeslotStockTracker {
         this.time = time || new Date();
         this.amount = amount;
         this.ticker = ticker;
+        Util.getStockPriceFromTimestamp(this.time, this.ticker, (function(self) {
+            return function(price) {
+                self.price = price;
+            };
+        }(this)));
     }
     
     
@@ -25,6 +30,12 @@ class singleTimeslotStockTracker {
     
     getTicker() {
         return this.ticker;
+    }
+    
+    
+    
+    getPrice() {
+        return this.price;
     }
 }
 
@@ -47,6 +58,50 @@ class multipleTimeslotStockTracker {
     
     getTotal() {
         return this.totalStock;
+    }
+    
+    
+    
+    getTotalMoney(date, callback = function() {}) {
+        if (typeof date === 'function') {
+            callback = date;
+            date = Util.getLastValidDate();
+        }
+        
+        var totalMoney = 0;
+        var totalMoneyCalculated = new Array(this.totalStock.length).fill(false);
+        
+        for (var i = 0; i < this.totalStock.length; i++) {
+            Util.getStockPriceFromTimestamp(date, this.ticker, (function(i, self) {
+                return function(price) {
+                    totalMoney += price * self.totalStock[i].getAmount();
+                    totalMoneyCalculated[i] = true;
+                    
+                    for (var j = 0; j < totalMoneyCalculated.length; j++) {
+                        if (!totalMoneyCalculated[j]) return;
+                    }
+                    
+                    // all stock price calculated
+                    callback(totalMoney);
+                };
+            }(i, this)));
+        }
+    }
+    
+    
+    
+    getTotalProfit(callback = function() {}) {
+        this.getTotalMoney((function(self) {
+            return function(totalMoney) {
+                var totalPrevMoney = 0;
+                
+                for (var i = 0; i < self.totalStock.length; i++) {
+                    totalPrevMoney += self.totalStock[i].getPrice() * self.totalStock[i].getAmount();
+                }
+                
+                callback(totalMoney - totalPrevMoney);
+            };
+        }(this)));
     }
     
     
@@ -199,7 +254,7 @@ class Portfolio {
     
     
     addStockTracker(stockTracker) {
-        if (stockTracker instanceof StockTracker) {
+        if (stockTracker instanceof multipleTimeslotStockTracker) {
             this.stockTrackers.push(stockTracker);
         }
     }
@@ -209,9 +264,14 @@ class Portfolio {
     
     getTotalStockMoney() {
         var totalStockMoney = 0;
+        var totalStockMoneyCalculated = new Array(this.totalStock.length).fill(false);
+        
         for (var i = 0; i < this.stockTrackers.length; i++) {
-            this.stockTrackers[i].getCurrentStockTotal(function(money) {
+            this.stockTrackers[i].getTotalMoney(function(money) {
                 totalStockMoney += money;
+                totalStockMoneyCalculated[i] = true;
+                
+                
             });
         }
         
@@ -223,7 +283,7 @@ class Portfolio {
     getTotalStockProfit() {
         var totalStockProfit = 0;
         for (var i = 0; i < this.stockTrackers.length; i++) {
-            this.stockTrackers[i].getStockAmountEarned(function(money) {
+            this.stockTrackers[i].getTotalProfit(function(money) {
                 totalStockProfit += money;
             });
         }
@@ -255,7 +315,7 @@ class Util {
             
             for (var i = 0; i < allCsv.length; i++) {
                 if (allCsv[i][1].toLowerCase().indexOf(stockName.toLowerCase()) > -1) {
-                    console.log(allCsv[i]);
+                    callback(allCsv[i]);
                 }
             }
         });
@@ -277,19 +337,21 @@ class Util {
                 '"') +
             "&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json",
             function(resp) {
-                // console.log(resp);
+                console.log(resp);
                 if (!resp.query.results) throw new Error('No entry found for date range ' + begin.toDateString() + ' to ' + end.toDateString());
                 if (Array.isArray(resp.query.results.quote)) {
                     var quotes = resp.query.results.quote;
 
                     var data = [];
                     for (var i = 0; i < quotes.length; i++) {
-                        data.push(quotes[i][type]);
+                        // round numbers for consistency
+                        data.push(this.round(quotes[i][type]));
                     }
                     
                     callback(data, resp);
                 } else {
-                    callback([resp.query.results.quote[type]], resp);
+                    // round numbers for consistency
+                    callback(this.round([resp.query.results.quote[type]]), resp);
                 }
             }
         );
@@ -392,11 +454,29 @@ class Util {
     
     
     
+    static getLastValidDate(startingDate = (new Date())) {
+        // keep on going back a day until found an open date
+        var yesterday = new Date(startingDate.setDate(startingDate.getDate() - 1));
+        while(this.isMarketClosed(yesterday)) {
+            yesterday = new Date(yesterday.setDate(yesterday.getDate() - 1));
+        }
+        
+        return yesterday;
+    }
+    
+    
+    
     static sleep(miliseconds) {
          var currentTime = new Date().getTime();
     
          while (currentTime + miliseconds >= new Date().getTime()) {}
-     }
+    }
+    
+    
+    
+    static round(number, decimalPoints = 4) {
+        return parseFloat(number.toFixed(decimalPoints));
+    }
     
     
     
@@ -443,7 +523,6 @@ class PreUtil {
                     } else {
                     }
                 }
-                console.log(lines);
                 self.allCsv = lines;
                 self.allTickerCsvLoaded = true;
             };

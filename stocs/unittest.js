@@ -22,6 +22,8 @@ QUnit.test('multipleTimeslotStockTracker buy', function(assert) {
 
 
 QUnit.test('multipleTimeslotStockTracker sell', function(assert) {
+    var done = assert.async();
+    
     var stock = new multipleTimeslotStockTracker('AAPL');
 
     stock.buy(5, new Date('2016-1-4'));
@@ -34,6 +36,34 @@ QUnit.test('multipleTimeslotStockTracker sell', function(assert) {
 
     stock.sell(9, new Date('2016-9-9'), function(price) {
         assert.equal(price, 61.98998400000001);
+        done();
+    });
+});
+
+
+
+QUnit.test('multipleTimeslotStockTracker getTotalMoney,getTotalProfit', function(assert) {
+    var done1 = assert.async();
+    var done2 = assert.async();
+    
+    var stock = new multipleTimeslotStockTracker('AAPL');
+
+    stock.buy(5, new Date('2016-1-4'));
+    stock.buy(9, new Date('2016-5-2'));
+    stock.buy(3, new Date('2016-6-2'));
+    
+    stock.sell(3, new Date('2016-7-25'));
+
+
+    stock.getTotalMoney(function(money) {
+        assert.equal(money, 1617.98);
+        done1();
+    });
+    
+    stock.getTotalProfit(function(profit) {
+        console.log(profit);
+        assert.equal(profit, 271.36);
+        done2();
     });
 });
 
@@ -53,4 +83,5 @@ QUnit.test('Util getTickerFromName', function(assert) {
     console.log(Util.getTickerFromName('apple'));
     
     // assert.equal(Util.getTickerFromName('microsoft'), 10);
+    assert.expect(0);
 });
