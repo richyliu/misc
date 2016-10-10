@@ -14,47 +14,8 @@
 <script>
     /* global $ */
     
-    
-    Date.prototype.add = function(milliseconds) {
-        return this.setMilliseconds(this.getMilliseconds() + milliseconds);
-    };
-    
-    
-    var startingDate = new Date(2000, 0, 1, 10, 45, 11);
-    var dates = [];
-    var data = [4, 2, 3, 3, 2, 1];
-    
-    for (var i = 0; i < data.length; i++) {
-        dates.push(startingDate.add(200));
-    }
-    
-    console.log(dates);
-    
-    var ctx = document.getElementById("myChart");
-    var scatterChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'acceleration',
-                data: data
-            }]
-        },
-        options: {
-            scales: {
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        unit: 'second'
-                    }
-                }]
-            }
-        }
-    });
 
     
-    
-    throw '';
     $.get('data.txt', function(resp) {
         var data = resp.split('\n');
         var timestamp = eval(data[0]);
@@ -81,86 +42,59 @@
             gyroZ.push(parseInt(split[3]));
         }
         
-        acc = [];
-        // gyroX = [];
-        // gyroY = [];
-        // gyroZ = [];
-        // genMov = [];
+        // acc = [];
+        gyroX = [];
+        gyroY = [];
+        gyroZ = [];
+        genMov = [];
         
         
-        $('#container').highcharts({
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: 'Movement',
-                x: -20 //center
-            },
-            xAxis: {
-                type: 'datetime'
-            },
-            yAxis: [{
-                title: {
-                    text: 'Gyro Movement'
-                },
-                min: -400,
-                max: 400,
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
+        
+        Date.prototype.add = function(milliseconds) {
+            return this.setMilliseconds(this.getMilliseconds() + milliseconds);
+        };
+        
+        
+        var startingDate = new Date(2000, 0, 1, 10, 45, 11);
+        var dates = [];
+        
+        for (var i = 0; i < acc.length; i++) {
+            dates.push(startingDate.add(200));
+        }
+        
+        
+        var ctx = document.getElementById("myChart");
+        var scatterChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'acceleration',
+                    data: acc
+                }, {
+                    label: 'gyro x',
+                    data: gyroX
+                }, {
+                    label: 'gyro y',
+                    data: gyroY
+                }, {
+                    label: 'gyro z',
+                    data: gyroZ
+                }, {
+                    label: 'movement',
+                    data: genMov
                 }]
-            },{
-                title: {
-                    text: 'Accelerometer Movement',
-                },
-                min: -101,
-                max: 101,
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#208080'
-                }]
-            },{
-                title: {
-                    text: 'General Movement',
-                },
-                min: -3,
-                max: 3,
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#508080'
-                }]
-            }],
-            series: [{
-                name: 'accelerometer z',
-                data: acc,
-                yAxis: 1,
-                pointStart: timestamp,
-                pointInterval: 200 // 0.2 seconds
-            }, {
-                name: 'gyroscope x',
-                data: gyroX,
-                pointStart: timestamp,
-                pointInterval: 200 // 0.2 seconds
-            }, {
-                name: 'gyroscope y',
-                data: gyroY,
-                pointStart: timestamp,
-                pointInterval: 200 // 0.2 seconds
-            }, {
-                name: 'gyroscope z',
-                data: gyroZ,
-                pointStart: timestamp,
-                pointInterval: 200 // 0.2 seconds
-            }, {
-                name: 'combined',
-                yAxis: 2,
-                data: genMov,
-                pointStart: timestamp,
-                pointInterval: 200 // 0.2 seconds
-            }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'minute'
+                        }
+                    }]
+                }
+            }
         });
     });
 </script>
