@@ -13,12 +13,33 @@
     <div id="container" style="width: 1600px; height: 450px; margin: 0 auto"></div>
 
 
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
     <script>
         /* global $ */
+        
+        
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyABHDeeddoSHz5E-YoWitm_lUIS7IRY3fE",
+            authDomain: "dreammonitor-65e4a.firebaseapp.com",
+            databaseURL: "https://dreammonitor-65e4a.firebaseio.com",
+            storageBucket: "dreammonitor-65e4a.appspot.com",
+            messagingSenderId: "772254164691"
+        };
+        firebase.initializeApp(config);
+        firebase.database().ref('/data').once('value').then(function(snapshot) {
+          var data = snapshot.val();
+          callback(data);
+        });
+        
+        
+        // $.get('data.txt', function(resp) {
+        //     callback(resp.split('\n'));
+        // });
 
 
-        $.get('data.txt', function(resp) {
-            var data = resp.split('\n');
+
+        function callback(data) {
             var timestamp = parseInt(data[0]) - 7 * 3600 * 1000; // change utc to pst
             var gyroX = [];
             var gyroY = [];
@@ -48,8 +69,8 @@
             // filter genMov to get mov
             var zerosInARow = 0;
             var zerosInARowStart = 0;
-            // let inARow = 300;
-            let inARow = 1000;
+            let inARow = 300;
+            // let inARow = 1000;
             for (var j = 0; j < genMov.length; j++) {
                 if (genMov[j] === 1) {
                     mov.push(1);
@@ -77,11 +98,11 @@
             }
 
             acc = [];
-            // gyroX = [];
-            // gyroY = [];
-            // gyroZ = [];
-            // genMov = [];
-            mov = [];
+            gyroX = [];
+            gyroY = [];
+            gyroZ = [];
+            genMov = [];
+            // mov = [];
 
             console.log('calculations finished!');
 
@@ -113,42 +134,40 @@
                 xAxis: {
                     type: 'datetime'
                 },
-                yAxis: [
-                    {
-                        title: {
-                            text: 'Gyro Movement'
-                        },
-                        min: -70,
-                        max: 70,
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#808080'
-                        }]
-                    }, {
-                        title: {
-                            text: 'Accelerometer Movement',
-                        },
-                        min: -70,
-                        max: 70,
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#208080'
-                        }]
-                    }, {
-                        title: {
-                            text: 'General Movement',
-                        },
-                        min: -2,
-                        max: 2,
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#508080'
-                        }]
-                    }
-                ],
+                yAxis: [{
+                    title: {
+                        text: 'Gyro Movement'
+                    },
+                    min: -70,
+                    max: 70,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                }, {
+                    title: {
+                        text: 'Accelerometer Movement',
+                    },
+                    min: -70,
+                    max: 70,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#208080'
+                    }]
+                }, {
+                    title: {
+                        text: 'General Movement',
+                    },
+                    min: -2,
+                    max: 2,
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#508080'
+                    }]
+                }],
                 series: [{
                     name: 'accelerometer z',
                     data: acc,
@@ -184,7 +203,7 @@
                     pointInterval: 200 // 0.2 seconds
                 }]
             });
-        });
+        }
     </script>
 </body>
 
