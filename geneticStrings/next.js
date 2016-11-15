@@ -2,6 +2,7 @@ const TARGET = 'hello, world';
 const MUTATION_WEIGHT = 10;
 const HALF_GENERATION_SIZE = 8;
 let best = 0;
+let dataPoints = [];
 
 let population = [
     'a rstast f67',
@@ -23,7 +24,7 @@ let population = [
 
 
 function main() {
-    Array(700).fill(0).forEach(() => {
+    Array(750).fill(0).every(() => {
         nextGeneration();
         
         $('#generation').html(parseInt($('#generation').html()) + 1);
@@ -40,6 +41,9 @@ function main() {
         
         console.log(best);
         $('#best').html(best);
+        
+        if (best === 0) return false;
+        else return true;
     });
 }
 
@@ -100,3 +104,17 @@ function mutate(string) {
 String.prototype.replaceAt = function(index, character) {
     return this.substr(0, index) + character + this.substr(index + character.length);
 };
+
+
+
+function setupChart() {
+	let chart = new CanvasJS.Chart("chartContainer",{
+		title :{
+			text: "Live Random Data"
+		},
+		data: [{
+			type: "line",
+			dataPoints: dataPoints
+		}]
+	});
+}

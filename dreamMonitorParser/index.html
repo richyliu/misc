@@ -5,51 +5,31 @@
 </head>
 
 <body>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
 
+    <div id="container" style="height: 300px"></div>
 
-    <div id="container" style="width: 1600px; height: 450px; margin: 0 auto"></div>
-
-
+    <script src="jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <script src="jquery.canvasjs.min.js"></script>
     <script>
-        /* global $ */
-        
-        
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyABHDeeddoSHz5E-YoWitm_lUIS7IRY3fE",
-            authDomain: "dreammonitor-65e4a.firebaseapp.com",
-            databaseURL: "https://dreammonitor-65e4a.firebaseio.com",
-            storageBucket: "dreammonitor-65e4a.appspot.com",
-            messagingSenderId: "772254164691"
-        };
-        firebase.initializeApp(config);
-        firebase.database().ref('/data').once('value').then(function(snapshot) {
-          var data = snapshot.val();
-          callback(data);
+        $.get('/Users/xlanzhou/Downloads/dreamData/2016-11-14.txt', function(resp) {
+            callback(resp.split('\n'));
         });
-        
-        
-        // $.get('data.txt', function(resp) {
-        //     callback(resp.split('\n'));
-        // });
-
 
 
         function callback(data) {
-            var timestamp = parseInt(data[0]) - 7 * 3600 * 1000; // change utc to pst
-            var gyroX = [];
-            var gyroY = [];
-            var gyroZ = [];
-            var acc = [];
-            var genMov = [];
-            var mov = [];
+            let timestamp = parseInt(data[0]) - 7 * 3600 * 1000; // change utc to pst
+            console.log(timestamp);
+            let startDate = new Date(timestamp);
+            let gyroX = [];
+            let gyroY = [];
+            let gyroZ = [];
+            let acc = [];
+            let genMov = [];
+            let mov = [];
 
-            for (var i = 1; i < data.length; i++) {
-                var split = data[i].split(',');
+            for (let i = 1; i < data.length; i++) {
+                let split = data[i].split(',');
 
                 // ignore accelerometer data if all other data are 0
                 if (data[i] === '-' || data[i].slice(-1) === '-') {
@@ -67,11 +47,11 @@
 
 
             // filter genMov to get mov
-            var zerosInARow = 0;
-            var zerosInARowStart = 0;
-            let inARow = 300;
-            // let inARow = 1000;
-            for (var j = 0; j < genMov.length; j++) {
+            let zerosInARow = 0;
+            let zerosInARowStart = 0;
+            // let inARow = 300;
+            let inARow = 1000;
+            for (let j = 0; j < genMov.length; j++) {
                 if (genMov[j] === 1) {
                     mov.push(1);
                     zerosInARow = 0;
@@ -88,7 +68,7 @@
                     mov.push(0);
 
                     // change all the mov ones before to 0 (they were 0 in genMov)
-                    for (var k = zerosInARowStart; k < j; k++) {
+                    for (let k = zerosInARowStart; k < j; k++) {
                         mov[k] = 0;
                     }
                     zerosInARowStart = 0;
@@ -97,112 +77,39 @@
                 }
             }
 
-            acc = [];
-            gyroX = [];
-            gyroY = [];
-            gyroZ = [];
-            genMov = [];
-            // mov = [];
+            genMov = genMov.map(item => {
+                return {
+                    x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
+                    y: item
+                };
+            });
+            mov = mov.map(item => {
+                return {
+                    x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
+                    y: item
+                };
+            });
 
             console.log('calculations finished!');
 
 
-            $('#container').highcharts({
-                chart: {
-                    zoomType: 'x',
-                    type: 'area'
-                },
+            let chart = new CanvasJS.Chart('container', {
                 title: {
-                    text: 'Movement',
-                    x: -20 //center
+                    text: 'Movement'
                 },
-                plotOptions: {
-                    area: {
-                        // pointStart: 1940,
-                        marker: {
-                            enabled: false,
-                            symbol: 'circle',
-                            radius: 2,
-                            states: {
-                                hover: {
-                                    enabled: true
-                                }
-                            }
-                        }
-                    }
-                },
-                xAxis: {
-                    type: 'datetime'
-                },
-                yAxis: [{
-                    title: {
-                        text: 'Gyro Movement'
-                    },
-                    min: -70,
-                    max: 70,
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }]
+                zoomEnabled: true,
+                data: [{
+                    type: 'area',
+                    xValueType: 'dateTime',
+                    // dataPoints: genMov
                 }, {
-                    title: {
-                        text: 'Accelerometer Movement',
-                    },
-                    min: -70,
-                    max: 70,
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#208080'
-                    }]
-                }, {
-                    title: {
-                        text: 'General Movement',
-                    },
-                    min: -2,
-                    max: 2,
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#508080'
-                    }]
-                }],
-                series: [{
-                    name: 'accelerometer z',
-                    data: acc,
-                    yAxis: 1,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
-                }, {
-                    name: 'gyroscope x',
-                    data: gyroX,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
-                }, {
-                    name: 'gyroscope y',
-                    data: gyroY,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
-                }, {
-                    name: 'gyroscope z',
-                    data: gyroZ,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
-                }, {
-                    name: 'combined unfiltered',
-                    yAxis: 2,
-                    data: genMov,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
-                }, {
-                    name: 'combined filtered',
-                    yAxis: 2,
-                    data: mov,
-                    pointStart: timestamp,
-                    pointInterval: 200 // 0.2 seconds
+                    type: 'area',
+                    xValueType: 'dateTime',
+                    dataPoints: mov
                 }]
             });
+
+            chart.render();
         }
     </script>
 </body>

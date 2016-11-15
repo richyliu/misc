@@ -3,9 +3,17 @@
     <head>
         <meta charset="utf-8">
         <title>Genetic Strings</title>
+        
+        <style media="screen">
+            #info {
+                
+            }
+        </style>
     </head>
     <body>
-        <div>
+        <div id="chartContainer" style="height: 300px; width:100%;"></div>
+        
+        <div id="info">
             <div>
                 Generation: <span id="generation">0</span>
             </div>
@@ -19,6 +27,7 @@
         </div>
         
         <script src="jquery.min.js"></script>
+        <script src="jquery.canvasjs.min.js"></script>
         <script src="next.js"></script>
     </body>
 </html>
