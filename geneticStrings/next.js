@@ -31,7 +31,7 @@ function main() {
         
         $('#population').html('');
         console.log(population);
-        population.forEach((string) => {
+        population.forEach(string => {
             $('#population').append(`
                 <div style="display: inline">
                     ${string}
@@ -50,9 +50,9 @@ function main() {
 
 function nextGeneration() {
     // copy population into array with items [string, fitness]
-    let curPopulation = population.map((item) => [item, 0]);
+    let curPopulation = population.map(item => [item, 0]);
     
-    curPopulation.forEach((string) => {
+    curPopulation.forEach(string => {
         // calculate fitness of each string
         string[1] = getFitness(string[0]);
     });

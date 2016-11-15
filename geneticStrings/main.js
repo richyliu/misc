@@ -35,9 +35,9 @@ function main() {
 
 function nextGeneration() {
     // copy population into array with items [string, fitness]
-    let curPopulation = population.map((item) => [item, 0]);
+    let curPopulation = population.map(item => [item, 0]);
     
-    curPopulation.forEach((string) => {
+    curPopulation.forEach(string => {
         // calculate fitness of each string
         string[1] = getFitness(string[0]);
     });
@@ -45,12 +45,12 @@ function nextGeneration() {
     let highestFitness = 0;
     let lowestFitness = 1000000;
     // calculate highest and lowest fitness
-    curPopulation.forEach((string) => {
+    curPopulation.forEach(string => {
         if (string[1] > highestFitness) highestFitness = string[1];
         if (string[1] < lowestFitness) lowestFitness = string[1];
     });
     // change fitness to relative fitness (between 0 and 1)
-    curPopulation.forEach((string) => {
+    curPopulation.forEach(string => {
         string[1] = (string[1] - lowestFitness) / (highestFitness - lowestFitness);
     });
     
@@ -97,7 +97,7 @@ function mutate(string, fitness) {
     if (fitness === 0) return string;
     
     string = string.split('');
-    string = string.map((char) => {
+    string = string.map(char => {
         const mutateAmt = Math.round((Math.random() * 2 - 1) * MUTATION_WEIGHT * fitness);
         // console.log((Math.random() * 2 - 1) * MUTATION_WEIGHT * fitness);
         // console.log(mutateAmt);
