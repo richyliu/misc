@@ -1,36 +1,50 @@
 const TARGET = 'hello, world';
-const MUTATION_WEIGHT = 10;
+let MUTATION_WEIGHT = 5.5;
 const HALF_GENERATION_SIZE = 8;
 let best = 0;
 let dataPoints = [];
 
-let population = [
-    'a rstast f67',
-    'cvrfaxc92,v7',
-    'z3,x08zorinl',
-    'z8xclm,5inus',
-    'nxcuyn3epnos',
-    'aarst stffxf',
-    'cvrf xc92,!s',
-    'z3,x08zori%a',
-    'cu3 s9x f3 9',
-    ',,3,45m3,el9',
-    'cvrf xc92,!s',
-    'z3,x08zori%a',
-    'cu3 s9x f3 9',
-    ',,3,45m3,el9'
-];
+let chart;
+let population;
 
+
+
+String.prototype.replaceAt = function(index, character) {
+    return this.substr(0, index) + character + this.substr(index + character.length);
+};
+
+
+
+setupChart();
+main();
 
 
 function main() {
-    Array(750).fill(0).every(() => {
+    population = [
+        'a rstast f67',
+        'cvrfaxc92,v7',
+        'z3,x08zorinl',
+        'z8xclm,5inus',
+        'nxcuyn3epnos',
+        'aarst stffxf',
+        'cvrf xc92,!s',
+        'z3,x08zori%a',
+        'cu3 s9x f3 9',
+        ',,3,45m3,el9',
+        'cvrf xc92,!s',
+        'z3,x08zori%a',
+        'cu3 s9x f3 9',
+        ',,3,45m3,el9'
+    ];
+    
+    Array.apply(null, {length: 120}).map(Number.call, Number).every((i) => {
         nextGeneration();
         
-        $('#generation').html(parseInt($('#generation').html()) + 1);
+        // update chart
+        dataPoints.push({y: best});
         
+        $('#generation').html(parseInt($('#generation').html()) + 1);
         $('#population').html('');
-        console.log(population);
         population.forEach(string => {
             $('#population').append(`
                 <div style="display: inline">
@@ -38,13 +52,15 @@ function main() {
                 </div>
             `);
         });
-        
-        console.log(best);
         $('#best').html(best);
+        
+        // console.log(population);
+        // console.log(best);
         
         if (best === 0) return false;
         else return true;
     });
+    chart.render();
 }
 
 
@@ -65,9 +81,11 @@ function nextGeneration() {
     curPopulation.splice(HALF_GENERATION_SIZE);
     
     // duplicate and mutate strings
-    for (let i = 0; i < HALF_GENERATION_SIZE; i++) {
-        curPopulation[i + HALF_GENERATION_SIZE] = mutate(curPopulation[i][0]);
-        curPopulation[i] = mutate(curPopulation[i][0]);
+    for (let i = 0; i < HALF_GENERATION_SIZE / 2; i++) {
+        const child = breed(curPopulation[i], curPopulation[i * 2]);
+        
+        curPopulation[i + HALF_GENERATION_SIZE] = mutate(curPopulation[i][0], best);
+        curPopulation[i] = mutate(curPopulation[i][0], best);
     }
     
     population = Array.from(curPopulation);
@@ -91,26 +109,24 @@ function breed(string1, string2) {
 }
 
 
-function mutate(string) {
+function mutate(string, fitness) {
+    const mutatedness = Math.ceil(fitness / MUTATION_WEIGHT);
     const mutateLetter = Math.floor(Math.random() * string.length);
     let letterCharCode = string.charCodeAt(mutateLetter) +
-        Math.floor(Math.random() * 3) - 1; //gives random number between -1 and 1
+        Math.floor(Math.random() * (mutatedness * 2 + 1)) - mutatedness; //gives random number between -1 and 1
+    
+    if (letterCharCode < 32) letterCharCode = 32;
+    if (letterCharCode > 132) letterCharCode = 132;
     
     return string.replaceAt(mutateLetter, String.fromCharCode(letterCharCode));
 }
 
 
 
-String.prototype.replaceAt = function(index, character) {
-    return this.substr(0, index) + character + this.substr(index + character.length);
-};
-
-
-
 function setupChart() {
-	let chart = new CanvasJS.Chart("chartContainer",{
+	chart = new CanvasJS.Chart("chartContainer",{
 		title :{
-			text: "Live Random Data"
+			text: "Best Fitness"
 		},
 		data: [{
 			type: "line",
