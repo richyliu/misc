@@ -12,15 +12,18 @@
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
     <script src="jquery.canvasjs.min.js"></script>
     <script>
-        $.get('/Users/xlanzhou/Downloads/dreamData/2016-11-14.txt', function(resp) {
+        let d = new Date();
+        
+        $.get(`/Users/xlanzhou/Downloads/dreamData/${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}.txt`, function(resp) {
             callback(resp.split('\n'));
         });
 
 
         function callback(data) {
             let timestamp = parseInt(data[0]) - 7 * 3600 * 1000; // change utc to pst
+            timestamp += 7 * 60 * 60 * 1000;
             console.log(timestamp);
-            let startDate = new Date(timestamp);
+            let startDate;
             let gyroX = [];
             let gyroY = [];
             let gyroZ = [];
@@ -30,19 +33,35 @@
 
             for (let i = 1; i < data.length; i++) {
                 let split = data[i].split(',');
-
+                
                 // ignore accelerometer data if all other data are 0
                 if (data[i] === '-' || data[i].slice(-1) === '-') {
                     split = ['0', '0', '0', '0'];
+                }
+                
+                let curAcc = parseInt(split[0]);
+                let curGyroX = parseInt(split[1]);
+                let curGyroY = parseInt(split[2]);
+                let curGyroZ = parseInt(split[3]);
+
+                // if all data zero
+                if (curAcc + curGyroX + curGyroY + curGyroZ === 0) {
                     genMov.push(0);
                 } else {
-                    genMov.push(1);
+                    // if only one (x, y, or z) is > 0 but others are zero
+                    if (curGyroX + curGyroY === 0 ||
+                        curGyroY + curGyroZ === 0 ||
+                        curGyroX + curGyroZ === 0) {
+                        genMov.push(0);
+                    } else {
+                        genMov.push(1);
+                    }
                 }
 
-                acc.push(parseInt(split[0]));
-                gyroX.push(parseInt(split[1]));
-                gyroY.push(parseInt(split[2]));
-                gyroZ.push(parseInt(split[3]));
+                acc.push(curAcc);
+                gyroX.push(curGyroX);
+                gyroY.push(curGyroY);
+                gyroZ.push(curGyroZ);
             }
 
 
@@ -77,13 +96,36 @@
                 }
             }
 
+            startDate = new Date(timestamp);
             genMov = genMov.map(item => {
                 return {
                     x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
                     y: item
                 };
             });
+            startDate = new Date(timestamp);
             mov = mov.map(item => {
+                return {
+                    x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
+                    y: item
+                };
+            });
+            startDate = new Date(timestamp);
+            gyroX = gyroX.map(item => {
+                return {
+                    x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
+                    y: item
+                };
+            });
+            startDate = new Date(timestamp);
+            gyroY = gyroY.map(item => {
+                return {
+                    x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
+                    y: item
+                };
+            });
+            startDate = new Date(timestamp);
+            gyroZ = gyroZ.map(item => {
                 return {
                     x: startDate.setMilliseconds(startDate.getMilliseconds() + 200),
                     y: item
@@ -93,15 +135,28 @@
             console.log('calculations finished!');
 
 
+
             let chart = new CanvasJS.Chart('container', {
                 title: {
                     text: 'Movement'
                 },
                 zoomEnabled: true,
                 data: [{
+                //     type: 'area',
+                //     xValueType: 'dateTime',
+                //     dataPoints: gyroX
+                // }, {
+                //     type: 'area',
+                //     xValueType: 'dateTime',
+                //     dataPoints: gyroY
+                // }, {
+                //     type: 'area',
+                //     xValueType: 'dateTime',
+                //     dataPoints: gyroZ
+                // }, {
                     type: 'area',
                     xValueType: 'dateTime',
-                    // dataPoints: genMov
+                    dataPoints: genMov
                 }, {
                     type: 'area',
                     xValueType: 'dateTime',
