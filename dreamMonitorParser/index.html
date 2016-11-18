@@ -15,6 +15,7 @@
         let d = new Date();
         
         $.get(`/Users/xlanzhou/Downloads/dreamData/${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}.txt`, function(resp) {
+        // $.get(`/Users/xlanzhou/Downloads/dreamData/2016-11-03.txt`, function(resp) {
             callback(resp.split('\n'));
         });
 
@@ -49,13 +50,13 @@
                     genMov.push(0);
                 } else {
                     // if only one (x, y, or z) is > 0 but others are zero
-                    if (curGyroX + curGyroY === 0 ||
-                        curGyroY + curGyroZ === 0 ||
-                        curGyroX + curGyroZ === 0) {
-                        genMov.push(0);
-                    } else {
+                    // if (curGyroX + curGyroY === 0 ||
+                    //     curGyroY + curGyroZ === 0 ||
+                    //     curGyroX + curGyroZ === 0) {
+                    //     genMov.push(0);
+                    // } else {
                         genMov.push(1);
-                    }
+                    // }
                 }
 
                 acc.push(curAcc);
