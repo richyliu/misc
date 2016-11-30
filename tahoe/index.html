@@ -6,6 +6,7 @@
     </head>
     <body>
         
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script>
             /*
                 alphine
@@ -21,7 +22,14 @@
                 http://images.prismcam.com/cams/00017/2016/11/29/
             */
             
-            
+            // get lift and grooming status
+            $.get({
+                url: 'http://squawalpine.com/skiing-riding/weather-conditions-webcams/lift-grooming-status',
+                sucess: data => {
+                    console.log(data);
+                    
+                }
+            });
         </script>
     </body>
 </html>
