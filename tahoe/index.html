@@ -3,8 +3,50 @@
     <head>
         <meta charset="utf-8">
         <title>Tahoe Weather and Webcams</title>
+        
+        <style media="screen">
+            iframe {
+                border: none;
+                width: 100%;
+                height: 500px;
+            }
+            .rotate-image-wrapper {
+                overflow: scroll;
+            }
+            button {
+                width: 150px;
+                height: 100px;
+                font-size: 40pt;
+                border-color: black;
+            }
+        </style>
     </head>
     <body>
+        
+        <div id="weather">
+            
+        </div>
+        <div id="photos">
+            <h2>Squaw 360</h2>
+            <div class="rotate-image-wrapper">
+                <img class="rotate-image" src="http://backend.roundshot.com/cams/249/medium">
+            </div>
+            <h2>Alpine 360</h2>
+            <div class="rotate-image-wrapper">
+                <img class="rotate-image" src="http://backend.roundshot.com/cams/250/medium">
+            </div>
+            <!-- <h2>Squaw High</h2>
+            <h2>Squaw Base</h2>
+            <h2>Alpine Base</h2> -->
+        </div>
+        <div id="lifts">
+            <h2>Squaw Front</h2>
+            <button type="button" onclick="loadIframe(this, 'http://us1.vicomap.com/player/?mapID=1446')">Load</button>
+            <h2>Squaw Back</h2>
+            <button type="button" onclick="loadIframe('squahttp://us1.vicomap.com/player/?mapID=1416wBack')">Load</button>
+            <h2>Alpine Front</h2>
+            <button type="button" onclick="loadIframe('http://us1.vicomap.com/player/?mapID=152')">Load</button>
+        </div>
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script>
@@ -22,14 +64,9 @@
                 http://images.prismcam.com/cams/00017/2016/11/29/
             */
             
-            // get lift and grooming status
-            $.get({
-                url: 'http://squawalpine.com/skiing-riding/weather-conditions-webcams/lift-grooming-status',
-                sucess: data => {
-                    console.log(data);
-                    
-                }
-            });
+            function loadIframe(ele, url) {
+                $(ele).hide().after(`<iframe src="${url}" style="border: none"></iframe>`);
+            }
         </script>
     </body>
 </html>
