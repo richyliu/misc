@@ -97,9 +97,19 @@ def getPhotoData():
 
 def main():
     indexSoup = BeautifulSoup(open('index.html'), 'html.parser')
+    photosDiv = indexSoup.find(id='photos')
+    photos = getPhotoData()
+    
+    photosDiv.find_all('img')[2]['src'] = photos['squawHigh']
+    photosDiv.find_all('img')[3]['src'] = photos['squawBase']
+    photosDiv.find_all('img')[4]['src'] = photos['alpineBase']
     
     print indexSoup.prettify()
+    
+    f = open('index.html', 'w')
+    f.write(indexSoup.prettify())
+    f.close()
 
 
 
-getPhotoData()
+main()

@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Tahoe Weather and Webcams</title>
-        
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="transparent">
-
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="favicons/apple-touch-icon-76x76.png">
-        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicons/apple-touch-icon-180x180.png">
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicons/apple-touch-icon-152x152.png">
-        
+ <head>
+  <meta charset="utf-8">
+   <title>
+    Tahoe Weather and Webcams
+   </title>
+   <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="transparent" name="apple-mobile-web-app-status-bar-style">
+     <link href="favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76">
+      <link href="favicons/apple-touch-icon-180x180.png" rel="apple-touch-icon-precomposed" sizes="120x120">
+       <link href="favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152">
         <style media="screen">
-            iframe {
+         iframe {
                 border: none;
                 width: 100%;
                 height: 500px;
@@ -27,43 +26,75 @@
                 border-color: black;
             }
         </style>
-    </head>
-    <body>
-        
-        <div id="weather">
-            
-        </div>
-        <div id="photos">
-            <h2>Squaw 360</h2>
-            <div class="rotate-image-wrapper">
-                <img class="rotate-image" src="http://backend.roundshot.com/cams/249/medium">
-            </div>
-            <h2>Alpine 360</h2>
-            <div class="rotate-image-wrapper">
-                <img class="rotate-image" src="http://backend.roundshot.com/cams/250/medium">
-            </div>
-            <!-- TODO: add these -->
-            <!-- <h2>Squaw High</h2>
-            <h2>Squaw Base</h2>
-            <h2>Alpine Base</h2> -->
-        </div>
-        <div id="lifts">
-            <!-- TODO: not working for mobile -->
-            <h2>Squaw Front</h2>
-            <button type="button" onclick="loadIframe(this, 'http://us1.vicomap.com/player/?mapID=1446')">Load</button>
-            <h2>Squaw Back</h2>
-            <button type="button" onclick="loadIframe('squahttp://us1.vicomap.com/player/?mapID=1416wBack')">Load</button>
-            <h2>Alpine Front</h2>
-            <button type="button" onclick="loadIframe('http://us1.vicomap.com/player/?mapID=152')">Load</button>
-            <h2>Squaw</h2>
-            <img src="https://skimap.org/data/538/897/1356844221.jpg">
-            <h2>Alpine</h2>
-            <img src="https://skimap.org/data/522/7/1257015085.jpg">
-        </div>
-        
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script>
-            /*
+       </link>
+      </link>
+     </link>
+    </meta>
+   </meta>
+  </meta>
+ </head>
+ <body>
+  <div id="weather">
+  </div>
+  <div id="photos">
+   <h2>
+    Squaw 360
+   </h2>
+   <div class="rotate-image-wrapper">
+    <img class="rotate-image" src="http://backend.roundshot.com/cams/249/medium"/>
+   </div>
+   <h2>
+    Alpine 360
+   </h2>
+   <div class="rotate-image-wrapper">
+    <img class="rotate-image" src="http://backend.roundshot.com/cams/250/medium"/>
+   </div>
+   <h2>
+    Squaw High
+   </h2>
+   <img style="width: 100%" src="http://images.prismcam.com/cams/00016/2016/11/30/21-34/720.jpg"/>
+   <h2>
+    Squaw Base
+   </h2>
+   <img style="width: 100%" src="http://images.prismcam.com/cams/00017/2016/11/30/21-34/720.jpg"/>
+   <h2>
+    Alpine Base
+   </h2>
+   <img style="width: 100%" src="http://images.prismcam.com/cams/00019/2016/11/30/21-33/720.jpg"/>
+  </div>
+  <div id="lifts">
+   <!-- TODO: not working for mobile -->
+   <h2>
+    Squaw Front
+   </h2>
+   <button onclick="loadIframe(this, 'http://us1.vicomap.com/player/?mapID=1446')" type="button">
+    Load
+   </button>
+   <h2>
+    Squaw Back
+   </h2>
+   <button onclick="loadIframe('squahttp://us1.vicomap.com/player/?mapID=1416wBack')" type="button">
+    Load
+   </button>
+   <h2>
+    Alpine Front
+   </h2>
+   <button onclick="loadIframe('http://us1.vicomap.com/player/?mapID=152')" type="button">
+    Load
+   </button>
+   <h2>
+    Squaw
+   </h2>
+   <img style="width: 100%" src="https://skimap.org/data/538/897/1356844221.jpg"/>
+   <h2>
+    Alpine
+   </h2>
+   <img style="width: 100%" src="https://skimap.org/data/522/7/1257015085.jpg"/>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+  </script>
+  <script>
+   /*
                 alphine
                 http://backend.roundshot.com/cams/250/medium
                 alphine base (every hour 3 or 4 minute)
@@ -80,6 +111,6 @@
             function loadIframe(ele, url) {
                 $(ele).hide().after(`<iframe src="${url}" style="border: none"></iframe>`);
             }
-        </script>
-    </body>
+  </script>
+ </body>
 </html>
