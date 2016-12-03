@@ -72,18 +72,18 @@ def savePhoto(camera, name):
     hourMinute = photoSoup.find('table').contents[-4].contents[1].contents[0].string
     
     # save photo
-    urllib.urlretrieve('http://images.prismcam.com/cams/' + camera + dt + hourMinute + '360.jpg', 'img/' + name + ".jpg")
+    urllib.urlretrieve('http://images.prismcam.com/cams/' + camera + dt + hourMinute + '720.jpg', 'img/' + name + ".jpg")
 
 
 def getPhotoData():
-    savePhoto('00016', 'squawHigh')
-    savePhoto('00017', 'squawBase')
-    savePhoto('00019', 'alpineBase')
+    # savePhoto('00016', 'squawHigh')
+    # savePhoto('00017', 'squawBase')
+    # savePhoto('00019', 'alpineBase')
 
     
-    urllib.URLopener.version = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+    urllib.URLopener.version = 'Mozilla/5.0'
     opener = urllib2.build_opener()
-    opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36')]
+    opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
     
     res = opener.open('http://backend.roundshot.com/cams/249/medium')
     urllib.urlretrieve(res.geturl(), "img/squaw360.jpg")
@@ -97,18 +97,6 @@ def getPhotoData():
 
 def main():
     getPhotoData()
-    # indexSoup = BeautifulSoup(open('index.html'), 'html.parser')
-    # photosDiv = indexSoup.find(id='photos')
-    # photos = getPhotoData()
-    #
-    # photosDiv.find_all('img')[2]['src'] = photos['squawHigh']
-    # photosDiv.find_all('img')[3]['src'] = photos['squawBase']
-    # photosDiv.find_all('img')[4]['src'] = photos['alpineBase']
-    #
-    # f = open('index.html', 'w')
-    # f.write(indexSoup.prettify())
-    # f.close()
-
 
 
 main()

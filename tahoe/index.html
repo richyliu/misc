@@ -1,17 +1,20 @@
-<!DOCTYPE html>
+<!DOCTYPEhtml>
+<!-- <html manifest=".appcache"> -->
 <html>
- <head>
-  <meta charset="utf-8"/>
-  <title>
-   Squaw&amp;Alpine;
-  </title>
-  <meta content="yes" name="apple-mobile-web-app-capable"/>
-  <meta content="transparent" name="apple-mobile-web-app-status-bar-style"/>
-  <link href="favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76"/>
-  <link href="favicons/apple-touch-icon-180x180.png" rel="apple-touch-icon-precomposed" sizes="120x120"/>
-  <link href="favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152"/>
-  <style media="screen">
-   iframe {
+
+<head>
+    <metacharset="utf-8" />
+
+    <title>Squaw &amp; Alpine</title>
+
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="transparent" name="apple-mobile-web-app-status-bar-style" />
+    <link href="favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76" />
+    <link href="favicons/apple-touch-icon-180x180.png" rel="apple-touch-icon-precomposed" sizes="120x120" />
+    <link href="favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152" />
+
+    <style media="screen">
+        iframe {
             border: none;
             width: 100%;
             height: 500px;
@@ -27,54 +30,44 @@
             font-size: 40pt;
             border-color: black;
         }
-  </style>
- </head>
- <body>
-  <div id="weather">
-  </div>
-  <div id="photos">
-   <h2>
-    Squaw 360
-   </h2>
-   <div class="rotate-image-wrapper">
-    <img class="rotate-image" src="img/squaw360.jpg"/>
-   </div>
-   <h2>
-    Alpine 360
-   </h2>
-   <div class="rotate-image-wrapper">
-    <img class="rotate-image" src="img/alpine360.jpg"/>
-   </div>
-   <h2>
-    Squaw High
-   </h2>
-   <img src="img/squawHigh.jpg" style="width: 100%"/>
-   <h2>
-    Squaw Base
-   </h2>
-   <img src="img/squawBase.jpg" style="width: 100%"/>
-   <h2>
-    Alpine Base
-   </h2>
-   <img src="img/alpineBase.jpg" style="width: 100%"/>
-  </div>
-  <div id="lifts">
-    <h2>
-     Squaw
-    </h2>
-    <img src="img/squawMap.jpg" style="width: 100%"/>
-    <h2>
-     Alpine
-    </h2>
-    <img src="img/alpineMap.jpg" style="width: 100%"/>
-   </img>
-  </div>
-  <script src="jquery.min.js">
-  </script>
-  <script>
-   function loadIframe(self, map) {
+    </style>
+</head>
+
+<body>
+    <div id="lifts">
+        <!-- TODO: add lifts status -->
+        <h2>Squaw</h2>
+        <img src="img/squawMap.jpg" style="width:100%" />
+        <h2>Alpine</h2>
+        <img src="img/alpineMap.jpg" style="width:100%" />
+    </div>
+
+    <div id="photos">
+        <h2>Squaw 360</h2>
+        <div class="rotate-image-wrapper">
+            <img class="rotate-image" src="img/squaw360.jpg" />
+        </div>
+
+        <h2>Alpine 360</h2>
+        <div class="rotate-image-wrapper">
+            <img class="rotate-image" src="img/alpine360.jpg" />
+        </div>
+
+        <h2>Squaw High</h2>
+        <img src="img/squawHigh.jpg" style="width:100%" />
+        <h2>Squaw Base</h2>
+        <img src="img/squawBase.jpg" style="width:100%" />
+        <h2>Alpine Base</h2>
+        <img src="img/alpineBase.jpg" style="width:100%" />
+    </div>
+    
+    
+    <script src="jquery.min.js"></script>
+    <script>
+        function loadIframe(self, map) {
             $.get(map, res => $(self).after(res));
         }
-  </script>
- </body>
+    </script>
+</body>
+
 </html>

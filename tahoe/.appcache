@@ -1,0 +1,11 @@
+CACHE MANIFEST
+# 2016-12-03:v2
+
+CACHE:
+index.html
+jquery.min.js
+img/squawMap.jpg
+img/alpineMap.jpg
+
+NETWORK:
+*
