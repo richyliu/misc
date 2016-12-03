@@ -64,16 +64,14 @@ def getWeatherData():
 '''get photo data'''
 
 def getPhoto(camera):
-    date = datetime.datetime.today().day
-    month = datetime.datetime.today().month
-    year = datetime.datetime.today().year
+    dt = datetime.datetime.now().strftime('/%Y/%m/%d/')
     
-    response = urllib2.urlopen('http://images.prismcam.com/cams/' + camera + '/' + str(year) + '/' + str(month) + '/' + str(date))
+    response = urllib2.urlopen('http://images.prismcam.com/cams/' + camera + dt)
     photoSoup = BeautifulSoup(response.read(), 'html.parser')
     hourMinute = photoSoup.find('table').contents[-4].contents[1].contents[0].string
     
     # get photo
-    return 'http://images.prismcam.com/cams/' + camera + '/' + str(year) + '/' + str(month) + '/' + str(date) + '/' + hourMinute + '720.jpg'
+    return 'http://images.prismcam.com/cams/' + camera + dt + hourMinute + '720.jpg'
 
 
 def getPhotoData():
@@ -104,7 +102,6 @@ def main():
     photosDiv.find_all('img')[3]['src'] = photos['squawBase']
     photosDiv.find_all('img')[4]['src'] = photos['alpineBase']
     
-    print indexSoup.prettify()
     
     f = open('index.html', 'w')
     f.write(indexSoup.prettify())
