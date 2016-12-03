@@ -1,3 +1,4 @@
+import urllib
 import urllib2
 import datetime
 from bs4 import BeautifulSoup
@@ -63,49 +64,50 @@ def getWeatherData():
 
 '''get photo data'''
 
-def getPhoto(camera):
+def savePhoto(camera, name):
     dt = datetime.datetime.now().strftime('/%Y/%m/%d/')
     
     response = urllib2.urlopen('http://images.prismcam.com/cams/' + camera + dt)
     photoSoup = BeautifulSoup(response.read(), 'html.parser')
     hourMinute = photoSoup.find('table').contents[-4].contents[1].contents[0].string
     
-    # get photo
-    return 'http://images.prismcam.com/cams/' + camera + dt + hourMinute + '720.jpg'
+    # save photo
+    urllib.urlretrieve('http://images.prismcam.com/cams/' + camera + dt + hourMinute + '360.jpg', 'img/' + name + ".jpg")
 
 
 def getPhotoData():
-    photos = {
-        'squawHigh': '',
-        'squawBase': '',
-        'alpineBase': '',
-    }
-    
-    photos['squawHigh'] = getPhoto('00016')
-    photos['squawBase'] = getPhoto('00017')
-    photos['alpineBase'] = getPhoto('00019')
-    
-    print photos
-    return photos
+    savePhoto('00016', 'squawHigh')
+    savePhoto('00017', 'squawBase')
+    savePhoto('00019', 'alpineBase')
 
+    
+    urllib.URLopener.version = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36')]
+    
+    res = opener.open('http://backend.roundshot.com/cams/249/medium')
+    urllib.urlretrieve(res.geturl(), "img/squaw360.jpg")
+    
+    res = opener.open('http://backend.roundshot.com/cams/250/medium')
+    urllib.urlretrieve(res.geturl(), "img/alpine360.jpg")
 
 
 
 '''put data into index.html'''
 
 def main():
-    indexSoup = BeautifulSoup(open('index.html'), 'html.parser')
-    photosDiv = indexSoup.find(id='photos')
-    photos = getPhotoData()
-    
-    photosDiv.find_all('img')[2]['src'] = photos['squawHigh']
-    photosDiv.find_all('img')[3]['src'] = photos['squawBase']
-    photosDiv.find_all('img')[4]['src'] = photos['alpineBase']
-    
-    
-    f = open('index.html', 'w')
-    f.write(indexSoup.prettify())
-    f.close()
+    getPhotoData()
+    # indexSoup = BeautifulSoup(open('index.html'), 'html.parser')
+    # photosDiv = indexSoup.find(id='photos')
+    # photos = getPhotoData()
+    #
+    # photosDiv.find_all('img')[2]['src'] = photos['squawHigh']
+    # photosDiv.find_all('img')[3]['src'] = photos['squawBase']
+    # photosDiv.find_all('img')[4]['src'] = photos['alpineBase']
+    #
+    # f = open('index.html', 'w')
+    # f.write(indexSoup.prettify())
+    # f.close()
 
 
 
