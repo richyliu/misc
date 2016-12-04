@@ -1,9 +1,8 @@
 <!DOCTYPEhtml>
-<!-- <html manifest=".appcache"> -->
 <html>
 
 <head>
-    <metacharset="utf-8" />
+    <meta charset="utf-8" />
 
     <title>Squaw &amp; Alpine</title>
 
@@ -34,39 +33,49 @@
 </head>
 
 <body>
+    <h2>Last updated: <span id="last-update"></span></h2>
+    
     <div id="lifts">
         <!-- TODO: add lifts status -->
         <h2>Squaw</h2>
-        <img src="img/squawMap.jpg" style="width:100%" />
+        <button type="button" onclick="$('#b1').toggle()">Load</button>
+        <div id="b1" style="display: none">
+            <img src="img/squawMap.jpg" style="width:100%"/>
+        </div>
         <h2>Alpine</h2>
-        <img src="img/alpineMap.jpg" style="width:100%" />
+        <button type="button" onclick="$('#b2').toggle()">Load</button>
+        <div id="b2" style="display: none">
+            <img src="img/alpineMap.jpg" style="width:100%"/>
+        </div>
     </div>
 
     <div id="photos">
         <h2>Squaw 360</h2>
+        <button type="button" onclick="document.getElementById('bt1').src='img/squaw360.jpg'">Load</button>
         <div class="rotate-image-wrapper">
-            <img class="rotate-image" src="img/squaw360.jpg" />
+            <img id="bt1" class="rotate-image" src=""/>
         </div>
 
         <h2>Alpine 360</h2>
+        <button type="button" onclick="document.getElementById('bt2').src='img/alpine360.jpg'">Load</button>
         <div class="rotate-image-wrapper">
-            <img class="rotate-image" src="img/alpine360.jpg" />
+            <img id="bt2" class="rotate-image" src="" />
         </div>
 
         <h2>Squaw High</h2>
-        <img src="img/squawHigh.jpg" style="width:100%" />
+        <button type="button" onclick="document.getElementById('bt3').src='img/squawHigh.jpg'">Load</button>
+        <img id="bt3" src="" style="width:100%" />
         <h2>Squaw Base</h2>
-        <img src="img/squawBase.jpg" style="width:100%" />
+        <button type="button" onclick="document.getElementById('bt4').src='img/squawBase.jpg'">Load</button>
+        <img id="bt4" src="" style="width:100%" />
         <h2>Alpine Base</h2>
-        <img src="img/alpineBase.jpg" style="width:100%" />
+        <button type="button" onclick="document.getElementById('bt5').src='img/alpineBase.jpg'">Load</button>
+        <img id="bt5" src="" style="width:100%" />
     </div>
     
-    
-    <script src="jquery.min.js"></script>
+    <script src="jquery.min.js" charset="utf-8"></script>
     <script>
-        function loadIframe(self, map) {
-            $.get(map, res => $(self).after(res));
-        }
+        $.get('update.info', res => $('#last-update').html(res));
     </script>
 </body>
 

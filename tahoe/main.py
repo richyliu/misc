@@ -76,9 +76,12 @@ def savePhoto(camera, name):
 
 
 def getPhotoData():
-    # savePhoto('00016', 'squawHigh')
-    # savePhoto('00017', 'squawBase')
-    # savePhoto('00019', 'alpineBase')
+    savePhoto('00016', 'squawHigh')
+    print 'squaw high finished'
+    savePhoto('00017', 'squawBase')
+    print 'squaw base finished'
+    savePhoto('00019', 'alpineBase')
+    print 'alpine base finished'
 
     
     urllib.URLopener.version = 'Mozilla/5.0'
@@ -87,9 +90,11 @@ def getPhotoData():
     
     res = opener.open('http://backend.roundshot.com/cams/249/medium')
     urllib.urlretrieve(res.geturl(), "img/squaw360.jpg")
+    print 'squaw 360 finished'
     
     res = opener.open('http://backend.roundshot.com/cams/250/medium')
     urllib.urlretrieve(res.geturl(), "img/alpine360.jpg")
+    print 'alpine 360 finished'
 
 
 
@@ -97,6 +102,11 @@ def getPhotoData():
 
 def main():
     getPhotoData()
+    
+    # write last updated
+    f = open('update.info', 'w')
+    f.write(str(datetime.datetime.now()))
+    f.close()
 
 
 main()
