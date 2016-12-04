@@ -1,6 +1,7 @@
 import urllib
 import urllib2
 import datetime
+import random
 from bs4 import BeautifulSoup
 import requests
 
@@ -82,11 +83,16 @@ def getPhotoData():
     print 'squaw base finished'
     savePhoto('00019', 'alpineBase')
     print 'alpine base finished'
-
     
-    urllib.URLopener.version = 'Mozilla/5.0'
+    
+    if random.random() < 0.5:
+        userAgent = 'Mozilla/5.0'
+    else:
+        userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+    
+    urllib.URLopener.version = userAgent
     opener = urllib2.build_opener()
-    opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+    opener.addheaders = [('User-Agent', userAgent)]
     
     res = opener.open('http://backend.roundshot.com/cams/249/medium')
     urllib.urlretrieve(res.geturl(), "img/squaw360.jpg")
