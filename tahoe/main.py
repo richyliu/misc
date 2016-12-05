@@ -2,52 +2,23 @@ import urllib
 import urllib2
 import datetime
 import random
-from bs4 import BeautifulSoup
+import json
 import requests
 
 
 
-'''get lift data'''
+'''get lift and run data'''
 
 def getLiftData():
-    print 'Requesting page...'
-
-    response = urllib2.urlopen('http://squawalpine.com/skiing-riding/weather-conditions-webcams/lift-grooming-status')
-    squawSoup = BeautifulSoup(response.read(), 'html.parser')
-
-    print 'Finish requesting page'
-
-
-    # lifts and grooming
-    squaw = {
-        'lastUpdate': squawSoup.find(id='squaw-report').contents[1].contents[1].string,
-        'openLifts': int(squawSoup.find(id='squaw-report').contents[1].find_all('p')[0].string),
-        'openTrails': int(squawSoup.find(id='squaw-report').contents[1].find_all('p')[1].string),
-        'openGroomed': int(squawSoup.find(id='squaw-report').contents[1].find_all('p')[2].string),
-        'lifts': squawSoup.find(id='squaw-report').contents[13],
-        'runs': squawSoup.find(id='squaw-report').contents[15]
-    }
-    # front: http://us1.vicomap.com/player/?mapID=1446
-    # back: http://us1.vicomap.com/player/?mapID=1416
-
-    alpine = {
-        'lastUpdate': squawSoup.find(id='alpine-report').contents[1].contents[1].string,
-        'openLifts': int(squawSoup.find(id='alpine-report').contents[1].find_all('p')[0].string),
-        'openTrails': int(squawSoup.find(id='alpine-report').contents[1].find_all('p')[1].string),
-        'openGroomed': int(squawSoup.find(id='alpine-report').contents[1].find_all('p')[2].string),
-        'lifts': squawSoup.find(id='alpine-report').contents[13],
-        'runs': squawSoup.find(id='alpine-report').contents[15]
-    }
-    # back: http://us1.vicomap.com/player/?mapID=152
-
-
-    # print 'total lifts: ' + str(alpine['openLifts'])
-    # print 'total trails: ' + str(alpine['openTrails'])
-    # print 'total groomed: ' + str(alpine['openGroomed'])
-    
     return {
-        'squaw': squaw,
-        'alpine': alpine
+        'squaw': {
+            'front': requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/1446').json()
+        },
+        # back: http://vicomap-cdn.resorts-interactive.com/api/details/1416
+        'alpine': {
+            'front': requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/152').json(),
+            'back': requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/162').json()
+        }
     }
 
 
@@ -65,54 +36,59 @@ def getWeatherData():
 
 '''get photo data'''
 
-def savePhoto(camera, name):
-    dt = datetime.datetime.now().strftime('/%Y/%m/%d/')
-    
-    response = urllib2.urlopen('http://images.prismcam.com/cams/' + camera + dt)
-    photoSoup = BeautifulSoup(response.read(), 'html.parser')
-    hourMinute = photoSoup.find('table').contents[-4].contents[1].contents[0].string
-    
-    # save photo
-    urllib.urlretrieve('http://images.prismcam.com/cams/' + camera + dt + hourMinute + '720.jpg', 'img/' + name + ".jpg")
-
-
 def getPhotoData():
-    savePhoto('00016', 'squawHigh')
-    print 'squaw high finished'
-    savePhoto('00017', 'squawBase')
-    print 'squaw base finished'
-    savePhoto('00019', 'alpineBase')
-    print 'alpine base finished'
+    urllib.urlretrieve('http://images.prismcam.com/cams/00016/720.jpg', 'img/squawHigh.jpg')
+    print 'downloaded squaw high photo'
+    urllib.urlretrieve('http://images.prismcam.com/cams/00017/720.jpg', 'img/squawBase.jpg')
+    print 'downloaded squaw base photo'
+    urllib.urlretrieve('http://images.prismcam.com/cams/00019/720.jpg', 'img/alpineBase.jpg')
+    print 'downloaded alpine base photo'
     
     
-    if random.random() < 0.5:
-        userAgent = 'Mozilla/5.0'
-    else:
-        userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36'
+    userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/' \
+        + str(random.randint(0, 999)).zfill(3) \
+        + '.36 (KHTML, like Gecko) Chrome/54.0.' \
+        + str(random.randint(0, 9999)).zfill(4) \
+        + '.98 Safari/' \
+        + str(random.randint(0, 999)).zfill(3) \
+        + '.36'
+    print userAgent
     
-    urllib.URLopener.version = userAgent
     opener = urllib2.build_opener()
     opener.addheaders = [('User-Agent', userAgent)]
     
     res = opener.open('http://backend.roundshot.com/cams/249/medium')
-    urllib.urlretrieve(res.geturl(), "img/squaw360.jpg")
-    print 'squaw 360 finished'
+    res = opener.open(res.geturl())
+    with open('img/squaw360.jpg', "wb") as f:
+        f.write(res.read())
+    print 'downloaded squaw 360 photo'
     
     res = opener.open('http://backend.roundshot.com/cams/250/medium')
-    urllib.urlretrieve(res.geturl(), "img/alpine360.jpg")
-    print 'alpine 360 finished'
+    res = opener.open(res.geturl())
+    with open('img/alpine360.jpg', "wb") as f:
+        f.write(res.read())
+    print 'downloaded alpine 360 photo'
 
 
 
 '''put data into index.html'''
 
 def main():
+    print 'getting photo data...'
     getPhotoData()
+    print 'got photo data!'
     
+    print 'writing lift data...'
+    # write lift data
+    with open('lift.info', 'w') as f:
+        f.write(json.dumps(getLiftData()))
+    print 'wrote lift data!'
+    
+    print 'writing last updated...'
     # write last updated
-    f = open('update.info', 'w')
-    f.write(str(datetime.datetime.now()))
-    f.close()
+    with open('update.info', 'w') as f:
+        f.write(str(datetime.datetime.now()))
+    print 'wrote last updated!'
 
 
 main()
