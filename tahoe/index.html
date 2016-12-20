@@ -92,32 +92,32 @@
     <!-- <button type="button" onclick="$('#cameras').toggle()">Show</button> -->
     <div id="cameras">
         <h2>Squaw 360 Camera</h2>
-        <button type="button" onclick="$('#squaw360').attr('src', '/home/pi/misc/tahoe/img/squaw360.jpg')">Load</button>
+        <button type="button" onclick="$('#squaw360').attr('src', 'img/squaw360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="squaw360" class="rotate-image" src=""/>
         </div>
         <h2>Alpine 360 Camera</h2>
-        <button type="button" onclick="$('#alpine360').attr('src', '/home/pi/misc/tahoe/img/alpine360.jpg')">Load</button>
+        <button type="button" onclick="$('#alpine360').attr('src', 'img/alpine360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="alpine360" class="rotate-image" src="" />
         </div>
 
         <h2>Squaw High Camera</h2>
-        <button type="button" onclick="$('#squawHigh').attr('src', '/home/pi/misc/tahoe/img/squawHigh.jpg')">Load</button>
+        <button type="button" onclick="$('#squawHigh').attr('src', 'img/squawHigh.jpg')">Load</button>
         <img id="squawHigh" src="" style="width:100%" />
         <h2>Squaw Base Camera</h2>
-        <button type="button" onclick="$('#squawBase').attr('src', '/home/pi/misc/tahoe/img/squawBase.jpg')">Load</button>
+        <button type="button" onclick="$('#squawBase').attr('src', 'img/squawBase.jpg')">Load</button>
         <img id="squawBase" src="" style="width:100%" />
         <h2>Alpine Base Camera</h2>
-        <button type="button" onclick="$('#alpineBase').attr('src', '/home/pi/misc/tahoe/img/alpineBase.jpg')">Load</button>
+        <button type="button" onclick="$('#alpineBase').attr('src', 'img/alpineBase.jpg')">Load</button>
         <img id="alpineBase" src="" style="width:100%" />
     </div>
     
     <script src="jquery.min.js" charset="utf-8"></script>
     <script>
-        $.get('/home/pi/misc/tahoe/update.info', res => $('#last-update').html(res));
+        $.get('update.info', res => $('#last-update').html(res));
         
-        $.get('/home/pi/misc/tahoe/lift.info', res => {
+        $.get('lift.info', res => {
         // $.get('lift.info', res => {
             res = JSON.parse(res);
             window.res = res;
