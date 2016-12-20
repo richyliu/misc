@@ -13,13 +13,7 @@
     <link href="favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152" />
 
     <style media="screen">
-        iframe {
-            border: none;
-            width: 100%;
-            height: 500px;
-        }
-        
-        .rotate-image-wrapper {
+        rotate-image-wrapper {
             overflow: scroll;
         }
         
@@ -29,14 +23,26 @@
             font-size: 40pt;
             border-color: black;
         }
+        
+        .red {
+            color: red
+        }
+        .green {
+            color: green
+        }
+        .yellow {
+            color: yellow
+        }
     </style>
 </head>
 
 <body>
     <h3>Last updated: <span id="last-update"></span></h3>
     
-    <h1>Maps</h1>
-    <!-- <button type="button" onclick="$('#maps').toggle()">Show</button> -->
+    <iframe id="forecast_embed" type="text/html" style="border: 0px; height: 245px; width: 100%" src="http://forecast.io/embed/#lat=39.2000&amp;lon=-120.2259&amp;name=Olympic%20Valley&amp;units=uk"></iframe>
+    
+    <!-- <h1>Maps</h1>
+    <button type="button" onclick="$('#maps').toggle()">Show</button>
     <div id="maps">
         <h2>Squaw</h2>
         <button type="button" onclick="$('#squawMap').toggle()">Load</button>
@@ -48,8 +54,12 @@
         <div id="alpineMap" style="display: none">
             <img src="img/alpineMap.jpg" style="width:100%"/>
         </div>
-        
-        <div id="lifts">
+    </div> -->
+    
+    
+    <div id="lifts">
+        <div style="float: left">
+            <h3>Lifts</h3>
             <table>
                 <thead>
                     <tr>
@@ -60,6 +70,21 @@
                 <tbody id="lift-body"></tbody>
             </table>
         </div>
+        
+        
+        <div style="margin-left: 55%">
+            <h3>Trails</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Groomed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="trail-body"></tbody>
+            </table>
+        </div>
     </div>
 
 
@@ -67,51 +92,56 @@
     <!-- <button type="button" onclick="$('#cameras').toggle()">Show</button> -->
     <div id="cameras">
         <h2>Squaw 360 Camera</h2>
-        <button type="button" onclick="$('#squaw360').attr('src', 'img/squaw360.jpg')">Load</button>
+        <button type="button" onclick="$('#squaw360').attr('src', '/home/pi/misc/tahoe/img/squaw360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="squaw360" class="rotate-image" src=""/>
         </div>
         <h2>Alpine 360 Camera</h2>
-        <button type="button" onclick="$('#alpine360').attr('src', 'img/alpine360.jpg')">Load</button>
+        <button type="button" onclick="$('#alpine360').attr('src', '/home/pi/misc/tahoe/img/alpine360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="alpine360" class="rotate-image" src="" />
         </div>
 
         <h2>Squaw High Camera</h2>
-        <button type="button" onclick="$('#squawHigh').attr('src', 'img/squawHigh.jpg')">Load</button>
+        <button type="button" onclick="$('#squawHigh').attr('src', '/home/pi/misc/tahoe/img/squawHigh.jpg')">Load</button>
         <img id="squawHigh" src="" style="width:100%" />
         <h2>Squaw Base Camera</h2>
-        <button type="button" onclick="$('#squawBase').attr('src', 'img/squawBase.jpg')">Load</button>
+        <button type="button" onclick="$('#squawBase').attr('src', '/home/pi/misc/tahoe/img/squawBase.jpg')">Load</button>
         <img id="squawBase" src="" style="width:100%" />
         <h2>Alpine Base Camera</h2>
-        <button type="button" onclick="$('#alpineBase').attr('src', 'img/alpineBase.jpg')">Load</button>
+        <button type="button" onclick="$('#alpineBase').attr('src', '/home/pi/misc/tahoe/img/alpineBase.jpg')">Load</button>
         <img id="alpineBase" src="" style="width:100%" />
     </div>
     
     <script src="jquery.min.js" charset="utf-8"></script>
     <script>
-        $.get('update.info', res => $('#last-update').html(res));
+        $.get('/home/pi/misc/tahoe/update.info', res => $('#last-update').html(res));
         
-        $.get('lift.info', res => {
+        $.get('/home/pi/misc/tahoe/lift.info', res => {
+        // $.get('lift.info', res => {
             res = JSON.parse(res);
             window.res = res;
             
-            const squawLifts = res.squaw.front.lifts;
-            for (const lift of squawLifts) {
+            for (const lift of res.squaw.front.lifts
+                .concat(res.alpine.front.lifts)
+                .concat(res.alpine.back.lifts)) {
                 $('#lift-body').append(`
                     <tr>
                         <td>${lift.name}</td>
-                        <td>${lift.status}</td>
+                        <td class="${lift.status === 'SCHEDULED' ? 'green' : 'red'}">${lift.status || 'CLOSED'}</td>
                     </tr>
                 `);
             }
             
-            const alpineLifts = res.alpine.front.lifts.concat(res.alpine.back.lifts);
-            for (const lift of alpineLifts) {
-                $('#lift-body').append(`
+            
+            for (const trail of res.squaw.front.trails
+                .concat(res.alpine.front.trails)
+                .concat(res.alpine.back.trails)) {
+                $('#trail-body').append(`
                     <tr>
-                        <td>${lift.name}</td>
-                        <td>${lift.status || 'CLOSED'}</td>
+                        <td>${trail.name}</td>
+                        <td class="${trail.groomed ? 'green' : 'red'}">${trail.groomed ? 'YES' : 'NO'}</td>
+                        <td class="${trail.status === 'OPEN' ? 'green' : 'red'}">${trail.status || 'CLOSED'}</td>
                     </tr>
                 `);
             }

@@ -27,20 +27,18 @@ def getLiftData():
 
 def getWeatherData():
     r = requests.get('https://api.darksky.net/forecast/9149e80d390a07dbd7a661d1bc8ae808/39.1996,-120.2285?units=uk2&exclude=daily,alerts,flags')
-    data = r.json()
-    
-    print(data)
+    return r.json()
 
 
 
 '''get photo data'''
 
 def getPhotoData():
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00016/720.jpg', 'img/squawHigh.jpg')
+    urllib.request.urlretrieve('http://images.prismcam.com/cams/00016/720.jpg', '/home/pi/misc/tahoe/img/squawHigh.jpg')
     print('downloaded squaw high photo')
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00017/720.jpg', 'img/squawBase.jpg')
+    urllib.request.urlretrieve('http://images.prismcam.com/cams/00017/720.jpg', '/home/pi/misc/tahoe/img/squawBase.jpg')
     print('downloaded squaw base photo')
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00019/720.jpg', 'img/alpineBase.jpg')
+    urllib.request.urlretrieve('http://images.prismcam.com/cams/00019/720.jpg', '/home/pi/misc/tahoe/img/alpineBase.jpg')
     print('downloaded alpine base photo')
     
     
@@ -58,13 +56,13 @@ def getPhotoData():
     
     res = opener.open('http://backend.roundshot.com/cams/249/medium')
     res = opener.open(res.geturl())
-    with open('img/squaw360.jpg', "wb") as f:
+    with open('/home/pi/misc/tahoe/img/squaw360.jpg', "wb") as f:
         f.write(res.read())
     print('downloaded squaw 360 photo')
     
     res = opener.open('http://backend.roundshot.com/cams/250/medium')
     res = opener.open(res.geturl())
-    with open('img/alpine360.jpg', "wb") as f:
+    with open('/home/pi/misc/tahoe/img/alpine360.jpg', "wb") as f:
         f.write(res.read())
     print('downloaded alpine 360 photo')
 
@@ -79,15 +77,21 @@ def main():
     
     print('writing lift data...')
     # write lift data
-    with open('lift.info', 'w') as f:
+    with open('/home/pi/misc/tahoe/lift.info', 'w') as f:
         f.write(json.dumps(getLiftData()))
     print('wrote lift data!')
     
     print('writing last updated...')
     # write last updated
-    with open('update.info', 'w') as f:
+    with open('/home/pi/misc/tahoe/update.info', 'w') as f:
         f.write(str(datetime.datetime.now()))
     print('wrote last updated!')
+    
+    # print('writing weather data...')
+    # # write last updated
+    # with open('/home/pi/misc/tahoe/weather.info', 'w') as f:
+    #     f.write(json.dumps(getWeatherData()))
+    # print('wrote weather data!')
 
 
 main()
