@@ -8,6 +8,7 @@
 
     <meta content="yes" name="apple-mobile-web-app-capable" />
     <meta content="transparent" name="apple-mobile-web-app-status-bar-style" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76" />
     <link href="favicons/apple-touch-icon-180x180.png" rel="apple-touch-icon-precomposed" sizes="120x120" />
     <link href="favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152" />
@@ -29,7 +30,7 @@
 <body>
     <h3>Last updated: <span id="last-update"></span></h3>
     
-    <iframe id="forecast_embed" type="text/html" style="border: 0px; height: 245px; width: 100%" src="http://forecast.io/embed/#lat=39.2000&amp;lon=-120.2259&amp;name=Olympic%20Valley&amp;units=uk"></iframe>
+    <!-- <iframe id="forecast_embed" type="text/html" style="border: 0px; height: 245px; width: 100%" src="http://forecast.io/embed/#lat=39.2000&amp;lon=-120.2259&amp;name=Olympic%20Valley&amp;units=uk"></iframe> -->
     
     <!-- <h1>Maps</h1>
     <button type="button" onclick="$('#maps').toggle()">Show</button>
@@ -46,8 +47,25 @@
         </div>
     </div> -->
     
+    <div>
+        <h1>Search</h1>
+        <input type="text" id="search-box" value="">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Groomed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="search-body"></tbody>
+        </table>
+    </div>
     
-    <div id="lifts">
+    
+    <h1>Lifts and Trails</h1>
+    <button type="button" onclick="$('#lifts').toggle()">Show</button>
+    <div id="lifts" style="display: none;">
         <div style="float: left">
             <h3>Lifts</h3>
             <table>
@@ -81,40 +99,46 @@
     <h1>Cameras</h1>
     <!-- <button type="button" onclick="$('#cameras').toggle()">Show</button> -->
     <div id="cameras">
-        <h2>Squaw 360 Camera</h2>
+        <h3>Squaw 360 Camera</h3>
         <button type="button" onclick="$('#squaw360').attr('src', 'img/squaw360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="squaw360" class="rotate-image" src=""/>
         </div>
-        <h2>Alpine 360 Camera</h2>
+        <h3>Alpine 360 Camera</h3>
         <button type="button" onclick="$('#alpine360').attr('src', 'img/alpine360.jpg')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="alpine360" class="rotate-image" src="" />
         </div>
 
-        <h2>Squaw High Camera</h2>
+        <h3>Squaw High Camera</h3>
         <button type="button" onclick="$('#squawHigh').attr('src', 'img/squawHigh.jpg')">Load</button>
         <img id="squawHigh" src="" style="width:100%" />
-        <h2>Squaw Base Camera</h2>
+        <h3>Squaw Base Camera</h3>
         <button type="button" onclick="$('#squawBase').attr('src', 'img/squawBase.jpg')">Load</button>
         <img id="squawBase" src="" style="width:100%" />
-        <h2>Alpine Base Camera</h2>
+        <h3>Alpine Base Camera</h3>
         <button type="button" onclick="$('#alpineBase').attr('src', 'img/alpineBase.jpg')">Load</button>
         <img id="alpineBase" src="" style="width:100%" />
     </div>
     
     <script src="jquery.min.js" charset="utf-8"></script>
     <script>
+        $('#search-box').focus();
+        
+        
+        let trailsAndLifts = [];
+        
         $.get('update.info', res => $('#last-update').html(res));
         
         $.get('lift.info', res => {
         // $.get('lift.info', res => {
             res = JSON.parse(res);
-            window.res = res;
+            
             
             for (const lift of res.squaw.front.lifts
                 .concat(res.alpine.front.lifts)
                 .concat(res.alpine.back.lifts)) {
+                trailsAndLifts.push(lift);
                 $('#lift-body').append(`
                     <tr>
                         <td>${lift.name}</td>
@@ -127,6 +151,7 @@
             for (const trail of res.squaw.front.trails
                 .concat(res.alpine.front.trails)
                 .concat(res.alpine.back.trails)) {
+                trailsAndLifts.push(trail);
                 $('#trail-body').append(`
                     <tr>
                         <td>${trail.name}</td>
@@ -138,8 +163,38 @@
         });
         
         
+        $('#search-box').keypress(e => {
+            if (e.which === 13) {
+                const query = $('#search-box').val().toLowerCase();
+                let results = [];
+                
+                // check if name includes the query
+                for (const item of trailsAndLifts) {
+                    if (item.name.toLowerCase().includes(query)) {
+                        console.log(item);
+                        results.push(item);
+                    }
+                }
+                
+                // clear search result box
+                $('#search-body').html('');
+                
+                for (const result of results) {
+                    $('#search-body').append(`
+                        <tr>
+                            <td>${result.name}</td>
+                            <td style="color: ${result.groomed === undefined ? 'black' : (result.groomed ? '#99CC00' : 'red')}">${result.groomed === undefined ? 'N/A' : (result.groomed ? 'YES' : 'NO')}</td>
+                            <td style="color: ${result.statusColour || 'red'}">${result.status || 'CLOSED'}</td>
+                        </tr>
+                    `);
+                }
+            }
+        });
+        
+        
+        
         $.get('weather.info', res => {
-        	res = JSON.parse(res)
+        	res = JSON.parse(res);
         	console.log(res);
             const data = res.minutely.data;
             
