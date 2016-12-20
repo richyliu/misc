@@ -38,7 +38,7 @@ def getPhotoData():
     print('downloaded squaw high photo')
     urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00017/720.jpg', 'img/squawBase.jpg')
     print('downloaded squaw base photo')
-    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-720.jpg', 'img/alpineBase.jpg')
+    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00019/720.jpg', 'img/alpineBase.jpg')
     print('downloaded alpine base photo')
     
     
