@@ -23,16 +23,6 @@
             font-size: 40pt;
             border-color: black;
         }
-        
-        .red {
-            color: red
-        }
-        .green {
-            color: green
-        }
-        .yellow {
-            color: yellow
-        }
     </style>
 </head>
 
@@ -128,7 +118,7 @@
                 $('#lift-body').append(`
                     <tr>
                         <td>${lift.name}</td>
-                        <td class="${lift.status === 'OPEN' ? 'green' : (lift.status === 'CLOSED' ? 'red' : 'yellow')}">${lift.status || 'CLOSED'}</td>
+                        <td style="color: ${lift.statusColour || 'red'}">${lift.status || 'CLOSED'}</td>
                     </tr>
                 `);
             }
@@ -140,8 +130,8 @@
                 $('#trail-body').append(`
                     <tr>
                         <td>${trail.name}</td>
-                        <td class="${trail.groomed ? 'green' : 'red'}">${trail.groomed ? 'YES' : 'NO'}</td>
-                        <td class="${trail.status === 'OPEN' ? 'green' : 'red'}">${trail.status || 'CLOSED'}</td>
+                        <td style="color: ${trail.groomed ? '#99CC00' : 'red'}">${trail.groomed ? 'YES' : 'NO'}</td>
+                        <td style="color: ${trail.statusColour || 'red'}">${trail.status || 'CLOSED'}</td>
                     </tr>
                 `);
             }
@@ -149,6 +139,8 @@
         
         
         $.get('weather.info', res => {
+        	res = JSON.parse(res)
+        	console.log(res);
             const data = res.minutely.data;
             
             for (const d of data) {

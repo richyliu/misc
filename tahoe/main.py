@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import urllib
 import datetime
 import random
@@ -85,7 +87,7 @@ def main():
     
     
     # only run every 30 minutes
-    if datetime.datetime.now().minute == 30:
+    if datetime.datetime.now().minute == 30 or True:
         print('getting photo data...')
         getPhotoData()
         print('got photo data!')
