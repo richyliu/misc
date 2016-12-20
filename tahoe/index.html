@@ -146,6 +146,15 @@
                 `);
             }
         });
+        
+        
+        $.get('weather.info', res => {
+            const data = res.minutely.data;
+            
+            for (const d of data) {
+                console.log(d.precipIntensity);
+            }
+        });
     </script>
 </body>
 

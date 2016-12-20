@@ -34,11 +34,11 @@ def getWeatherData():
 '''get photo data'''
 
 def getPhotoData():
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00016/720.jpg', 'img/squawHigh.jpg')
+    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00016/720.jpg', 'img/squawHigh.jpg')
     print('downloaded squaw high photo')
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00017/720.jpg', 'img/squawBase.jpg')
+    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00017/720.jpg', 'img/squawBase.jpg')
     print('downloaded squaw base photo')
-    urllib.request.urlretrieve('http://images.prismcam.com/cams/00019/720.jpg', 'img/alpineBase.jpg')
+    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-720.jpg', 'img/alpineBase.jpg')
     print('downloaded alpine base photo')
     
     
