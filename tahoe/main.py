@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import urllib
+import urllib.request
 import datetime
 import random
 import json
