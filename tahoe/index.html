@@ -128,7 +128,7 @@
                 $('#lift-body').append(`
                     <tr>
                         <td>${lift.name}</td>
-                        <td class="${lift.status === 'SCHEDULED' ? 'green' : 'red'}">${lift.status || 'CLOSED'}</td>
+                        <td class="${lift.status === 'OPEN' ? 'green' : (lift.status === 'CLOSED' ? 'red' : 'yellow')}">${lift.status || 'CLOSED'}</td>
                     </tr>
                 `);
             }

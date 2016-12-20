@@ -71,10 +71,6 @@ def getPhotoData():
 '''put data into index.html'''
 
 def main():
-    print('getting photo data...')
-    getPhotoData()
-    print('got photo data!')
-    
     print('writing lift data...')
     # write lift data
     with open('lift.info', 'w') as f:
@@ -87,11 +83,18 @@ def main():
         f.write(str(datetime.datetime.now()))
     print('wrote last updated!')
     
-    print('writing weather data...')
-    # write last updated
-    with open('weather.info', 'w') as f:
-        f.write(json.dumps(getWeatherData()))
-    print('wrote weather data!')
+    
+    # only run every 30 minutes
+    if datetime.datetime.now().minute == 30:
+        print('getting photo data...')
+        getPhotoData()
+        print('got photo data!')
+        
+        print('writing weather data...')
+        # write last updated
+        with open('weather.info', 'w') as f:
+            f.write(json.dumps(getWeatherData()))
+        print('wrote weather data!')
 
 
 main()
