@@ -33,10 +33,10 @@
 </head>
 
 <body>
-    <h1>Maps</h1>
-    <h2>Last updated: <span id="map-last-update"></span></h2>
+    <h3>Last updated: <span id="last-update"></span></h3>
     
-    <button type="button" onclick="$('#maps').toggle()">Show</button>
+    <h1>Maps</h1>
+    <!-- <button type="button" onclick="$('#maps').toggle()">Show</button> -->
     <div id="maps">
         <h2>Squaw</h2>
         <button type="button" onclick="$('#squawMap').toggle()">Load</button>
@@ -64,9 +64,7 @@
 
 
     <h1>Cameras</h1>
-    <h2>Last updated: <span id="camera-last-update"></span></h2>
-    
-    <button type="button" onclick="$('#cameras').toggle()">Show</button>
+    <!-- <button type="button" onclick="$('#cameras').toggle()">Show</button> -->
     <div id="cameras">
         <h2>Squaw 360 Camera</h2>
         <button type="button" onclick="$('#squaw360').attr('src', 'img/squaw360.jpg')">Load</button>
@@ -92,7 +90,7 @@
     
     <script src="jquery.min.js" charset="utf-8"></script>
     <script>
-        $.get('update.info', res => $('#camera-last-update').html(res));
+        $.get('update.info', res => $('#last-update').html(res));
         
         $.get('lift.info', res => {
             res = JSON.parse(res);
