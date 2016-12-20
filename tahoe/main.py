@@ -87,11 +87,11 @@ def main():
         f.write(str(datetime.datetime.now()))
     print('wrote last updated!')
     
-    # print('writing weather data...')
-    # # write last updated
-    # with open('weather.info', 'w') as f:
-    #     f.write(json.dumps(getWeatherData()))
-    # print('wrote weather data!')
+    print('writing weather data...')
+    # write last updated
+    with open('weather.info', 'w') as f:
+        f.write(json.dumps(getWeatherData()))
+    print('wrote weather data!')
 
 
 main()
