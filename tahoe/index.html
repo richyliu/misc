@@ -19,7 +19,6 @@
         }
         
         button {
-            width: 150px;
             height: 100px;
             font-size: 40pt;
             border-color: black;
@@ -66,7 +65,7 @@
     <h1>Lifts and Trails</h1>
     <button type="button" onclick="$('#lifts').toggle()">Show</button>
     <div id="lifts" style="display: none;">
-        <div style="float: left">
+        <div>
             <h3>Lifts</h3>
             <table>
                 <thead>
@@ -80,7 +79,7 @@
         </div>
         
         
-        <div style="margin-left: 55%">
+        <div>
             <h3>Trails</h3>
             <table>
                 <thead>
@@ -165,7 +164,7 @@
         
         $('#search-box').keypress(e => {
             if (e.which === 13) {
-                const query = $('#search-box').val().toLowerCase();
+                const query = $('#search-box').val().toLowerCase().trim();
                 let results = [];
                 
                 // check if name includes the query
