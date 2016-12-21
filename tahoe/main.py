@@ -88,7 +88,7 @@ def main():
     
     
     # only run every 30 minutes
-    if datetime.datetime.now().minute == 30 or sys.argv[1] == 'p':
+    if datetime.datetime.now().minute % 30 == 0 or sys.argv[1] == 'p':
         print('getting photo data...')
         getPhotoData()
         print('got photo data!')
