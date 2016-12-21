@@ -1,11 +1,9 @@
 #!/usr/bin/python3
 
-import urllib.request
 import datetime
-import random
 import json
-import requests
 import sys
+import requests
 
 
 
@@ -34,43 +32,6 @@ def getWeatherData():
 
 
 
-'''get photo data'''
-
-def getPhotoData():
-    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00016/720.jpg', '/var/www/html/misc/tahoe/img/squawHigh.jpg')
-    print('downloaded squaw high photo')
-    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00017/720.jpg', '/var/www/html/misc/tahoe/img/squawBase.jpg')
-    print('downloaded squaw base photo')
-    urllib.request.urlretrieve('http://storage.googleapis.com/prism-cam-00019/720.jpg', '/var/www/html/misc/tahoe/img/alpineBase.jpg')
-    print('downloaded alpine base photo')
-    
-    
-    userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/' \
-        + str(random.randint(0, 999)).zfill(3) \
-        + '.36 (KHTML, like Gecko) Chrome/54.0.' \
-        + str(random.randint(0, 9999)).zfill(4) \
-        + '.98 Safari/' \
-        + str(random.randint(0, 999)).zfill(3) \
-        + '.36'
-    print(userAgent)
-    
-    opener = urllib.request.build_opener()
-    opener.addheaders = [('User-Agent', userAgent)]
-    
-    res = opener.open('http://backend.roundshot.com/cams/249/medium')
-    res = opener.open(res.geturl())
-    with open('/var/www/html/misc/tahoe/img/squaw360.jpg', "wb") as f:
-        f.write(res.read())
-    print('downloaded squaw 360 photo')
-    
-    res = opener.open('http://backend.roundshot.com/cams/250/medium')
-    res = opener.open(res.geturl())
-    with open('/var/www/html/misc/tahoe/img/alpine360.jpg', "wb") as f:
-        f.write(res.read())
-    print('downloaded alpine 360 photo')
-
-
-
 '''put data into index.html'''
 
 def main():
@@ -88,11 +49,7 @@ def main():
     
     
     # only run every 30 minutes
-    if datetime.datetime.now().minute % 30 == 0 or sys.argv[1] == 'p':
-        print('getting photo data...')
-        getPhotoData()
-        print('got photo data!')
-        
+    if datetime.datetime.now().minute % 15 == 0 or sys.argv[1] == 'w':
         print('writing weather data...')
         # write last updated
         with open('/var/www/html/misc/tahoe/weather.info', 'w') as f:
