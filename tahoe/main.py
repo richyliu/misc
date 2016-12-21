@@ -5,6 +5,7 @@ import datetime
 import random
 import json
 import requests
+import sys
 
 
 
@@ -87,7 +88,7 @@ def main():
     
     
     # only run every 30 minutes
-    if datetime.datetime.now().minute == 30:
+    if datetime.datetime.now().minute == 30 or sys.argv[1] == 'p':
         print('getting photo data...')
         getPhotoData()
         print('got photo data!')
