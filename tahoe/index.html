@@ -49,6 +49,7 @@
     <div>
         <h1>Search</h1>
         <input type="text" id="search-box" value="">
+        <a href="#" onclick="window.search('')">Show All</a>
         <table>
             <thead>
                 <tr>
@@ -62,7 +63,7 @@
     </div>
     
     
-    <h1>Lifts and Trails</h1>
+    <!-- <h1>Lifts and Trails</h1>
     <button type="button" onclick="$('#lifts').toggle()">Show</button>
     <div id="lifts" style="display: none;">
         <div>
@@ -92,7 +93,7 @@
                 <tbody id="trail-body"></tbody>
             </table>
         </div>
-    </div>
+    </div> -->
 
 
     <h1>Cameras</h1>
@@ -159,36 +160,46 @@
                     </tr>
                 `);
             }
+            
+            
+            // put list in alphabetical order
+            trailsAndLifts.sort((a, b) => {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
         });
         
         
         $('#search-box').keypress(e => {
-            if (e.which === 13) {
-                const query = $('#search-box').val().toLowerCase().trim();
-                let results = [];
-                
-                // check if name includes the query
-                for (const item of trailsAndLifts) {
-                    if (item.name.toLowerCase().includes(query)) {
-                        console.log(item);
-                        results.push(item);
-                    }
-                }
-                
-                // clear search result box
-                $('#search-body').html('');
-                
-                for (const result of results) {
-                    $('#search-body').append(`
-                        <tr>
-                            <td>${result.name}</td>
-                            <td style="color: ${result.groomed === undefined ? 'black' : (result.groomed ? '#99CC00' : 'red')}">${result.groomed === undefined ? 'N/A' : (result.groomed ? 'YES' : 'NO')}</td>
-                            <td style="color: ${result.statusColour || 'red'}">${result.status || 'CLOSED'}</td>
-                        </tr>
-                    `);
+            if (e.which === 13) search($('#search-box').val());
+        });
+        
+        
+        function search(query) {
+            query = query.toLowerCase().trim();
+            let results = [];
+            
+            // check if name includes the query
+            for (const item of trailsAndLifts) {
+                if (item.name.toLowerCase().includes(query)) {
+                    results.push(item);
                 }
             }
-        });
+            
+            // clear search result box
+            $('#search-body').html('');
+            
+            for (const result of results) {
+                $('#search-body').append(`
+                    <tr>
+                        <td>${result.name}</td>
+                        <td style="color: ${result.groomed === undefined ? 'black' : (result.groomed ? '#99CC00' : 'red')}">${result.groomed === undefined ? 'N/A' : (result.groomed ? 'YES' : 'NO')}</td>
+                        <td style="color: ${result.statusColour || 'red'}">${result.status || 'CLOSED'}</td>
+                    </tr>
+                `);
+            }
+        }
         
         
         
