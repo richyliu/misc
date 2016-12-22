@@ -199,10 +199,10 @@
                 },
                 series: [{
                     name: 'Intensity',
-                    data: temp1.minutelyRainIntensity
+                    data: res.minutelyRainIntensity
                 }, {
                     name: 'Probability',
-                    data: temp1.minutelyRainProbability
+                    data: res.minutelyRainProbability
                 }]
             });
             
@@ -253,35 +253,35 @@
                 },
                 series: [{
                     name: 'Intensity',
-                    data: temp1.hourlyRainIntensity,
+                    data: res.hourlyRainIntensity,
                     yAxis: 0,
                     tooltip: {
                         valueSuffix: '%'
                     }
                 }, {
                     name: 'Probability',
-                    data: temp1.hourlyRainProbability,
+                    data: res.hourlyRainProbability,
                     yAxis: 0,
                     tooltip: {
                         valueSuffix: '%'
                     }
                 }, {
                     name: 'Feels Like',
-                    data: temp1.hourlyTempFeel,
+                    data: res.hourlyTempFeel,
                     yAxis: 1,
                     tooltip: {
                         valueSuffix: 'oC'
                     }
                 }, {
                     name: 'Temperature',
-                    data: temp1.hourlyTemp,
+                    data: res.hourlyTemp,
                     yAxis: 1,
                     tooltip: {
                         valueSuffix: 'oC'
                     }
                 }, {
                     name: 'Wind Speed',
-                    data: temp1.windSpeed,
+                    data: res.windSpeed,
                     yAxis: 2,
                     tooltip: {
                         valueSuffix: 'mph'
