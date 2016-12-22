@@ -83,13 +83,10 @@ def main():
     with open('/var/www/html/misc/tahoe/update.info', 'w') as f:
         f.write(str(datetime.datetime.now()))
     print('wrote last updated!')
-    
-    
-    # only run every 30 minutes
-    if datetime.datetime.now().minute % 15 == 0 or sys.argv[1] == 'w':
-        print('writing weather data...')
-        with open('/var/www/html/misc/tahoe/weather.info', 'w') as f:
-            json.dump(getWeatherData(), f)
-        print('wrote weather data!')
+        
+    print('writing weather data...')
+    with open('/var/www/html/misc/tahoe/weather.info', 'w') as f:
+        json.dump(getWeatherData(), f)
+    print('wrote weather data!')
 
 main()
