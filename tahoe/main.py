@@ -56,15 +56,15 @@ def getWeatherData():
     
     
     for d in res['minutely']['data']:
-        r['minutelyRainIntensity'].append([d['time'] * 1000, int(d['precipIntensity'] * 100)])
-        r['minutelyRainProbability'].append([d['time'] * 1000, int(d['precipProbability'] * 100)])
+        r['minutelyRainIntensity'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipIntensity'] * 100)])
+        r['minutelyRainProbability'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipProbability'] * 100)])
     
     for d in res['hourly']['data']:
-        r['hourlyRainIntensity'].append([d['time'] * 1000, int(d['precipIntensity'] * 100)])
-        r['hourlyRainProbability'].append([d['time'] * 1000, int(d['precipProbability'] * 100)])
-        r['hourlyTempFeel'].append([d['time'] * 1000, int(d['apparentTemperature'])])
-        r['hourlyTemp'].append([d['time'] * 1000, int(d['temperature'])])
-        r['windSpeed'].append([d['time'] * 1000, round(d['windSpeed'], 2)])
+        r['hourlyRainIntensity'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipIntensity'] * 100)])
+        r['hourlyRainProbability'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipProbability'] * 100)])
+        r['hourlyTempFeel'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['apparentTemperature'])])
+        r['hourlyTemp'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['temperature'])])
+        r['windSpeed'].append([(d['time'] - 8 * 60 * 60) * 1000, round(d['windSpeed'], 2)])
     
     
     return r
@@ -88,7 +88,7 @@ def main():
     # only run every 30 minutes
     if datetime.datetime.now().minute % 15 == 0 or sys.argv[1] == 'w':
         print('writing weather data...')
-        with open('weather.info', 'w') as f:
+        with open('/var/www/html/misc/tahoe/weather.info', 'w') as f:
             json.dump(getWeatherData(), f)
         print('wrote weather data!')
 
