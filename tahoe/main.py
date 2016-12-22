@@ -92,6 +92,4 @@ def main():
             json.dump(getWeatherData(), f)
         print('wrote weather data!')
 
-# main()
-with open('lift.info', 'w') as f:
-    json.dump(getLiftData(), f)
+main()
