@@ -125,8 +125,8 @@
                 $('#search-body').append(`
                     <tr>
                         <td>${result.name}</td>
-                        <td style="color: ${result.groomed === undefined ? 'black' : (result.groomed ? '#99CC00' : 'red')}">${result.groomed === undefined ? 'N/A' : (result.groomed ? 'YES' : 'NO')}</td>
-                        <td style="color: ${result.statusColour || 'red'}">${result.status || 'CLOSED'}</td>
+                        <td style="color: ${result.groomedColor}">${result.groomed}</td>
+                        <td style="color: ${result.statusColour}">${result.status}</td>
                     </tr>
                 `);
             }

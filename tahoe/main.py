@@ -18,24 +18,58 @@ def getLiftData():
     
     
     for trail in squawFront['trails']:
+        trail = checkTrail(trail)
         trailsAndLifts.append(trail)
     
     for trail in alpineFront['trails']:
+        trail = checkTrail(trail)
         trailsAndLifts.append(trail)
     
     for trail in alpineBack['trails']:
+        trail = checkTrail(trail)
         trailsAndLifts.append(trail)
     
     for lift in squawFront['lifts']:
+        lift = checkLift(lift)
         trailsAndLifts.append(lift)
     
     for lift in alpineFront['lifts']:
+        lift = checkLift(lift)
         trailsAndLifts.append(lift)
     
     for lift in alpineBack['lifts']:
+        lift = checkLift(lift)
         trailsAndLifts.append(lift)
         
     return trailsAndLifts
+
+def checkTrail(trail):
+    if 'groomed' not in trail:
+        trail['groomed'] = 'N/A'
+        trail['groomedColor'] = 'black'
+    elif trail['groomed']:
+        trail['groomed'] = 'YES'
+        trail['groomedColor'] = '#99CC00'
+    else:
+        trail['groomed'] = 'NO'
+        trail['groomedColor'] = 'red'
+    
+    if 'status' not in trail:
+        trail['status'] = 'N/A'
+        trail['statusColour'] = 'black'
+    
+    return trail
+
+
+def checkLift(lift):
+    lift['groomed'] = '-'
+    lift['groomedColor'] = 'black'
+    
+    if 'status' not in lift:
+        lift['status'] = 'N/A'
+        lift['statusColour'] = 'black'
+    
+    return lift
 
 
 
