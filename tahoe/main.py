@@ -2,7 +2,6 @@
 
 import datetime
 import json
-import sys
 import requests
 
 
@@ -58,6 +57,11 @@ def checkTrail(trail):
         trail['status'] = 'N/A'
         trail['statusColour'] = 'black'
     
+    trail.pop('description', None)
+    trail.pop('id', None)
+    trail.pop('x', None)
+    trail.pop('y', None)
+    
     return trail
 
 
@@ -68,6 +72,11 @@ def checkLift(lift):
     if 'status' not in lift:
         lift['status'] = 'N/A'
         lift['statusColour'] = 'black'
+    
+    lift.pop('description', None)
+    lift.pop('id', None)
+    lift.pop('x', None)
+    lift.pop('y', None)
     
     return lift
 
