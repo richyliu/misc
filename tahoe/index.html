@@ -131,53 +131,14 @@
         
         let trailsAndLifts = [];
         
-        $.get('update.info', res => $('#last-update').html(res));
+        $.get('update.info', r => $('#last-update').html(r));
         
-        $.get('lift.info', res => {
-        // $.get('lift.info', res => {
-            res = JSON.parse(res);
-            
-            
-            for (const lift of res.squaw.front.lifts
-                .concat(res.alpine.front.lifts)
-                .concat(res.alpine.back.lifts)) {
-                trailsAndLifts.push(lift);
-                $('#lift-body').append(`
-                    <tr>
-                        <td>${lift.name}</td>
-                        <td style="color: ${lift.statusColour || 'red'}">${lift.status || 'CLOSED'}</td>
-                    </tr>
-                `);
-            }
-            
-            
-            for (const trail of res.squaw.front.trails
-                .concat(res.alpine.front.trails)
-                .concat(res.alpine.back.trails)) {
-                trailsAndLifts.push(trail);
-                $('#trail-body').append(`
-                    <tr>
-                        <td>${trail.name}</td>
-                        <td style="color: ${trail.groomed ? '#99CC00' : 'red'}">${trail.groomed ? 'YES' : 'NO'}</td>
-                        <td style="color: ${trail.statusColour || 'red'}">${trail.status || 'CLOSED'}</td>
-                    </tr>
-                `);
-            }
-            
-            
-            // put list in alphabetical order
-            trailsAndLifts.sort((a, b) => {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-                return 0;
-            });
-        });
+        $.get('lift.info', r => trailsAndLifts = JSON.parse(r));
         
         
         $('#search-box').keypress(e => {
             if (e.which === 13) search($('#search-box').val());
         });
-        
         
         function search(query) {
             query = query.toLowerCase().trim();
@@ -208,8 +169,6 @@
         
         $.get('weather.info', res => {
             res = JSON.parse(res);
-            window.temp1 = res;
-            console.log(res);
             
             
             Highcharts.chart('minutely', {
