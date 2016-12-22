@@ -56,48 +56,15 @@
     
     <div>
         <h1>Weather</h1>
-        <div>
+        <div style="left: -60px; position: relative">
             <div id="minutely"></div>
         </div>
-        <div>
+        <div style="left: -110px; position: relative">
             <div id="hourly"></div>
         </div>
     </div>
     
     
-    <!-- <h1>Lifts and Trails</h1>
-    <button type="button" onclick="$('#lifts').toggle()">Show</button>
-    <div id="lifts" style="display: none;">
-        <div>
-            <h3>Lifts</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="lift-body"></tbody>
-            </table>
-        </div>
-        
-        
-        <div>
-            <h3>Trails</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Groomed</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="trail-body"></tbody>
-            </table>
-        </div>
-    </div> -->
-
-
     <h1>Cameras</h1>
     <!-- <button type="button" onclick="$('#cameras').toggle()">Show</button> -->
     <div id="cameras">
@@ -128,18 +95,18 @@
     <script>
         $('#search-box').focus();
         
+        $('#minutely').css('width', window.innerWidth + 170);
+        $('#hourly').css('width', window.innerWidth + 240);
         
         let trailsAndLifts = [];
         
         $.get('update.info', r => $('#last-update').html(r));
-        
         $.get('lift.info', r => trailsAndLifts = JSON.parse(r));
         
         
         $('#search-box').keypress(e => {
             if (e.which === 13) search($('#search-box').val());
         });
-        
         function search(query) {
             query = query.toLowerCase().trim();
             let results = [];
@@ -207,7 +174,7 @@
             });
             
             
-            Highcharts.chart('hourly', {
+            window.ch = Highcharts.chart('hourly', {
                 title: {
                     text: 'Hourly',
                 },
@@ -216,7 +183,8 @@
                 },
                 yAxis: [{
                     title: {
-                        text: 'Percent'
+                        // text: 'Percent',
+                        text: ''
                     },
                     plotLines: [{
                         value: 0,
@@ -225,7 +193,8 @@
                     }]
                 }, {
                     title: {
-                        text: 'Temperature (oC)'
+                        // text: 'Temperature (oC)',
+                        text: ''
                     },
                     plotLines: [{
                         value: 0,
@@ -234,7 +203,8 @@
                     }]
                 }, {
                     title: {
-                        text: 'Miles per Hour'
+                        // text: 'Miles per Hour',
+                        text: ''
                     },
                     plotLines: [{
                         value: 0,
