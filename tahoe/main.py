@@ -27,8 +27,32 @@ def getLiftData():
 '''get weather data'''
 
 def getWeatherData():
-    r = requests.get('https://api.darksky.net/forecast/9149e80d390a07dbd7a661d1bc8ae808/39.1996,-120.2285?units=uk2&exclude=daily,alerts,flags')
-    return r.json()
+    res = requests.get('https://api.darksky.net/forecast/9149e80d390a07dbd7a661d1bc8ae808/39.1996,-120.2285?units=uk2&exclude=daily,alerts,flags')
+    res = res.json()
+    r = {
+        'minutelyRainIntensity': [],
+        'minutelyRainIntensityError': [],
+        'minutelyRainProbability': [],
+        'hourlyRainIntensity': [],
+        'hourlyRainProbability': [],
+        'hourlyTempFeel': [],
+        'hourlyTemp': [],
+        'windSpeed': []
+    }
+    
+    for d in res['minutely']['data']:
+        r['minutelyRainIntensity'].append([d['time'] * 1000, int(d['precipIntensity'] * 100)])
+        r['minutelyRainProbability'].append([d['time'] * 1000, int(d['precipProbability'] * 100)])
+    
+    for d in res['hourly']['data']:
+        r['hourlyRainIntensity'].append([d['time'] * 1000, int(d['precipIntensity'] * 100)])
+        r['hourlyRainProbability'].append([d['time'] * 1000, int(d['precipProbability'] * 100)])
+        r['hourlyTempFeel'].append([d['time'] * 1000, int(d['apparentTemperature'])])
+        r['hourlyTemp'].append([d['time'] * 1000, int(d['temperature'])])
+        r['windSpeed'].append([d['time'] * 1000, round(d['windSpeed'], 2)])
+    
+    
+    return r
 
 
 
@@ -38,7 +62,7 @@ def main():
     print('writing lift data...')
     # write lift data
     with open('/var/www/html/misc/tahoe/lift.info', 'w') as f:
-        f.write(json.dumps(getLiftData()))
+        json.dump(getLiftData(), f)
     print('wrote lift data!')
     
     print('writing last updated...')
@@ -57,4 +81,6 @@ def main():
         print('wrote weather data!')
 
 
-main()
+# main()
+with open('weather.info', 'w') as f:
+    json.dump(getWeatherData(), f)

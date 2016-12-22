@@ -53,6 +53,18 @@
     </div>
     
     
+    
+    <div>
+        <h1>Weather</h1>
+        <div>
+            <div id="minutely"></div>
+        </div>
+        <div>
+            <div id="hourly"></div>
+        </div>
+    </div>
+    
+    
     <!-- <h1>Lifts and Trails</h1>
     <button type="button" onclick="$('#lifts').toggle()">Show</button>
     <div id="lifts" style="display: none;">
@@ -111,7 +123,8 @@
         <img id="alpineBase" src="" style="width:100%" />
     </div>
     
-    <script src="jquery.min.js" charset="utf-8"></script>
+    <script src="jquery.min.js"></script>
+    <script src="highcharts.min.js"></script>
     <script>
         $('#search-box').focus();
         
@@ -194,13 +207,130 @@
         
         
         $.get('weather.info', res => {
-        	res = JSON.parse(res);
-        	console.log(res);
-            const data = res.minutely.data;
+            res = JSON.parse(res);
+            window.temp1 = res;
+            console.log(res);
             
-            for (const d of data) {
-                console.log(d.precipIntensity);
-            }
+            
+            Highcharts.chart('minutely', {
+                title: {
+                    text: 'Minutely Rainfall',
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Percent'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Intensity',
+                    data: temp1.minutelyRainIntensity
+                }, {
+                    name: 'Probability',
+                    data: temp1.minutelyRainProbability
+                }]
+            });
+            
+            
+            Highcharts.chart('hourly', {
+                title: {
+                    text: 'Hourly',
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: [{
+                    title: {
+                        text: 'Percent'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        // color: '#808080'
+                    }]
+                }, {
+                    title: {
+                        text: 'Temperature (oC)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        // color: '#808080'
+                    }]
+                }, {
+                    title: {
+                        text: 'Miles per Hour'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        // color: '#808080'
+                    }]
+                }],
+                tooltip: {
+                    shared: false
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Intensity',
+                    data: temp1.hourlyRainIntensity,
+                    yAxis: 0,
+                    tooltip: {
+                        valueSuffix: '%'
+                    }
+                }, {
+                    name: 'Probability',
+                    data: temp1.hourlyRainProbability,
+                    yAxis: 0,
+                    tooltip: {
+                        valueSuffix: '%'
+                    }
+                }, {
+                    name: 'Feels Like',
+                    data: temp1.hourlyTempFeel,
+                    yAxis: 1,
+                    tooltip: {
+                        valueSuffix: 'oC'
+                    }
+                }, {
+                    name: 'Temperature',
+                    data: temp1.hourlyTemp,
+                    yAxis: 1,
+                    tooltip: {
+                        valueSuffix: 'oC'
+                    }
+                }, {
+                    name: 'Wind Speed',
+                    data: temp1.windSpeed,
+                    yAxis: 2,
+                    tooltip: {
+                        valueSuffix: 'mph'
+                    }
+                }]
+            });
+
+
         });
     </script>
 </body>
