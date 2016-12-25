@@ -2,8 +2,6 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-
     <title>Squaw &amp; Alpine</title>
 
     <meta content="yes" name="apple-mobile-web-app-capable" />
@@ -73,11 +71,11 @@
         <div class="rotate-image-wrapper">
             <img id="squaw360" class="rotate-image" src=""/>
         </div>
-        <h3>Alpine 360 Camera</h3>
+        <!-- <h3>Alpine 360 Camera</h3>
         <button type="button" onclick="$('#alpine360').attr('src', 'http://backend.roundshot.com/cams/250/medium')">Load</button>
         <div class="rotate-image-wrapper">
             <img id="alpine360" class="rotate-image" src="" />
-        </div>
+        </div> -->
 
         <h3>Squaw High Camera</h3>
         <button type="button" onclick="$('#squawHigh').attr('src', 'http://storage.googleapis.com/prism-cam-00016/720.jpg')">Load</button>
@@ -85,9 +83,9 @@
         <h3>Squaw Base Camera</h3>
         <button type="button" onclick="$('#squawBase').attr('src', 'http://storage.googleapis.com/prism-cam-00017/720.jpg')">Load</button>
         <img id="squawBase" src="" style="width:100%" />
-        <h3>Alpine Base Camera</h3>
+        <!-- <h3>Alpine Base Camera</h3>
         <button type="button" onclick="$('#alpineBase').attr('src', 'http://storage.googleapis.com/prism-cam-00019/720.jpg')">Load</button>
-        <img id="alpineBase" src="" style="width:100%" />
+        <img id="alpineBase" src="" style="width:100%" /> -->
     </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -136,45 +134,46 @@
         
         $.get('weather.info', res => {
             res = JSON.parse(res);
+            console.log(res);
             
             
-            Highcharts.chart('minutely', {
-                title: {
-                    text: 'Minutely Rainfall',
-                },
-                xAxis: {
-                    type: 'datetime'
-                },
-                yAxis: {
-                    title: {
-                        text: 'Percent'
-                    },
-                    plotLines: [{
-                        value: 0,
-                        width: 1,
-                        color: '#808080'
-                    }]
-                },
-                tooltip: {
-                    valueSuffix: '%'
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'middle',
-                    borderWidth: 0
-                },
-                series: [{
-                    name: 'Intensity',
-                    data: res.minutelyRainIntensity
-                }, {
-                    name: 'Probability',
-                    data: res.minutelyRainProbability
-                }]
-            });
+            // Highcharts.chart('minutely', {
+            //     title: {
+            //         text: 'Minutely Rainfall',
+            //     },
+            //     xAxis: {
+            //         type: 'datetime'
+            //     },
+            //     yAxis: {
+            //         title: {
+            //             text: 'Percent'
+            //         },
+            //         plotLines: [{
+            //             value: 0,
+            //             width: 1,
+            //             color: '#808080'
+            //         }]
+            //     },
+            //     tooltip: {
+            //         valueSuffix: '%'
+            //     },
+            //     legend: {
+            //         layout: 'vertical',
+            //         align: 'right',
+            //         verticalAlign: 'middle',
+            //         borderWidth: 0
+            //     },
+            //     series: [{
+            //         name: 'Intensity',
+            //         data: res.minutelyRainIntensity
+            //     }, {
+            //         name: 'Probability',
+            //         data: res.minutelyRainProbability
+            //     }]
+            // });
             
             
-            window.ch = Highcharts.chart('hourly', {
+            Highcharts.chart('hourly', {
                 title: {
                     text: 'Hourly',
                 },
@@ -193,7 +192,7 @@
                     }]
                 }, {
                     title: {
-                        // text: 'Temperature (oC)',
+                        // text: 'Temperature (°C)',
                         text: ''
                     },
                     plotLines: [{
@@ -236,18 +235,11 @@
                         valueSuffix: '%'
                     }
                 }, {
-                    name: 'Feels Like',
-                    data: res.hourlyTempFeel,
-                    yAxis: 1,
-                    tooltip: {
-                        valueSuffix: 'oC'
-                    }
-                }, {
                     name: 'Temperature',
-                    data: res.hourlyTemp,
+                    data: res.tempFeel,
                     yAxis: 1,
                     tooltip: {
-                        valueSuffix: 'oC'
+                        valueSuffix: '°C'
                     }
                 }, {
                     name: 'Wind Speed',
@@ -256,10 +248,15 @@
                     tooltip: {
                         valueSuffix: 'mph'
                     }
+                }, {
+                    name: 'Cloud Cover',
+                    data: res.cloudCover,
+                    yAxis: 0,
+                    tooltip: {
+                        valueSuffix: '%'
+                    }
                 }]
             });
-
-
         });
     </script>
 </body>

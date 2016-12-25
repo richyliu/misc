@@ -12,33 +12,33 @@ def getLiftData():
     trailsAndLifts = []
     
     squawFront = requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/1446').json()
-    alpineFront = requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/152').json()
-    alpineBack = requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/162').json()
+    # alpineFront = requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/152').json()
+    # alpineBack = requests.get('http://vicomap-cdn.resorts-interactive.com/api/details/162').json()
     
     
     for trail in squawFront['trails']:
         trail = checkTrail(trail)
         trailsAndLifts.append(trail)
     
-    for trail in alpineFront['trails']:
-        trail = checkTrail(trail)
-        trailsAndLifts.append(trail)
-    
-    for trail in alpineBack['trails']:
-        trail = checkTrail(trail)
-        trailsAndLifts.append(trail)
+    # for trail in alpineFront['trails']:
+    #     trail = checkTrail(trail)
+    #     trailsAndLifts.append(trail)
+    #
+    # for trail in alpineBack['trails']:
+    #     trail = checkTrail(trail)
+    #     trailsAndLifts.append(trail)
     
     for lift in squawFront['lifts']:
         lift = checkLift(lift)
         trailsAndLifts.append(lift)
     
-    for lift in alpineFront['lifts']:
-        lift = checkLift(lift)
-        trailsAndLifts.append(lift)
-    
-    for lift in alpineBack['lifts']:
-        lift = checkLift(lift)
-        trailsAndLifts.append(lift)
+    # for lift in alpineFront['lifts']:
+    #     lift = checkLift(lift)
+    #     trailsAndLifts.append(lift)
+    #
+    # for lift in alpineBack['lifts']:
+    #     lift = checkLift(lift)
+    #     trailsAndLifts.append(lift)
         
     return trailsAndLifts
 
@@ -85,6 +85,7 @@ def checkLift(lift):
 '''get weather data'''
 
 def getWeatherData():
+    eightHours = 8 * 60 * 60 * 1000
     res = requests.get('https://api.darksky.net/forecast/9149e80d390a07dbd7a661d1bc8ae808/39.1996,-120.2285?units=uk2&exclude=daily,alerts,flags').json()
     r = {
         'minutelyRainIntensity': [],
@@ -92,22 +93,22 @@ def getWeatherData():
         'minutelyRainProbability': [],
         'hourlyRainIntensity': [],
         'hourlyRainProbability': [],
-        'hourlyTempFeel': [],
-        'hourlyTemp': [],
-        'windSpeed': []
+        'tempFeel': [],
+        'windSpeed': [],
+        'cloudCover': []
     }
     
     
     for d in res['minutely']['data']:
-        r['minutelyRainIntensity'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipIntensity'] * 100)])
-        r['minutelyRainProbability'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipProbability'] * 100)])
+        r['minutelyRainIntensity'].append([d['time'] * 1000 - eightHours, int(d['precipIntensity'] * 100)])
+        r['minutelyRainProbability'].append([d['time'] * 1000 - eightHours, int(d['precipProbability'] * 100)])
     
     for d in res['hourly']['data']:
-        r['hourlyRainIntensity'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipIntensity'] * 100)])
-        r['hourlyRainProbability'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['precipProbability'] * 100)])
-        r['hourlyTempFeel'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['apparentTemperature'])])
-        r['hourlyTemp'].append([(d['time'] - 8 * 60 * 60) * 1000, int(d['temperature'])])
-        r['windSpeed'].append([(d['time'] - 8 * 60 * 60) * 1000, round(d['windSpeed'], 2)])
+        r['hourlyRainIntensity'].append([d['time'] * 1000 - eightHours, int(d['precipIntensity'] * 100)])
+        r['hourlyRainProbability'].append([d['time'] * 1000 - eightHours, int(d['precipProbability'] * 100)])
+        r['tempFeel'].append([d['time'] * 1000 - eightHours, int(d['apparentTemperature'])])
+        r['windSpeed'].append([d['time'] * 1000 - eightHours, round(d['windSpeed'], 2)])
+        r['cloudCover'].append([d['time'] * 1000 - eightHours, int(d['cloudCover'] * 100)])
     
     
     return r
@@ -132,4 +133,23 @@ def main():
         json.dump(getWeatherData(), f)
     print('wrote weather data!')
 
+
+def otherMain():
+    print('writing lift data...')
+    with open('lift.info', 'w') as f:
+        json.dump(getLiftData(), f)
+    print('wrote lift data!')
+    
+    print('writing last updated...')
+    with open('update.info', 'w') as f:
+        f.write(str(datetime.datetime.now()))
+    print('wrote last updated!')
+        
+    print('writing weather data...')
+    with open('weather.info', 'w') as f:
+        json.dump(getWeatherData(), f)
+    print('wrote weather data!')
+
+
 main()
+# otherMain()
