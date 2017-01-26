@@ -35,6 +35,19 @@
         document.getElementById('url').href = urls[0].url;
         document.getElementById('url').innerHTML = urls[0].url;
         
+        
+        window.onmousedown = copyText;
+        window.ontouchstart = copyText;
+        
+        function copyText() {
+            let myelement = document.getElementById('url');
+            let range = document.createRange();
+
+            range.selectNode(myelement);
+            window.getSelection().addRange(range);
+            
+            a = document.execCommand('copy');
+        }
     </script>
 </body>
 
