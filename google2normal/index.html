@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Google 2 Normal Url</title>
+    <style media="screen">
+        div {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="url">
+        <button type="button" id="submit">Enter</button>
+    </div>
+
+    <div>
+        <input type="text" id="result">
+        <button data-clipboard-target="#result">Copy</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.16/clipboard.min.js"></script>
+    <script>
+        new Clipboard('button');
+
+        document.getElementById('submit').onclick = () => {
+            let url = document.getElementById('url').value;
+            console.log(url);
+            document.getElementById('result').value = decodeURIComponent(url.match(/&url=([^&]+)/g)[0].slice(5));
+            document.getElementById('result').setAttribute('value', decodeURIComponent(url.match(/&url=([^&]+)/g)[0].slice(5)));
+        }
+    </script>
+</body>
+
+</html>
