@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+    
+    <style type="text/css">
+        @media screen and (max-width: 600px) {
+            body {
+                zoom: 90%
+            }
+        }
+        
+        #gameWrapper {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Chrome/Safari/Opera */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* IE/Edge */
+        }
+        #keys {
+            margin: auto;
+            max-width: 250px;
+        }
+        #canvasWrapper {
+            margin: auto;
+            max-width: 220px;
+        }
+        #kb {
+            color: transparent;
+            background-color: transparent;
+            border-color: transparent;
+            outline: none;
+            cursor: default;
+            width: 1px;
+            height: 1px;
+            border: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body onload="$('#kb').focus()">
+    
+    <h3 style="text-align: center;">Linez by Richard Liu. Concept by Matt.</h3>
+    
+    <div id="gameWrapper" onclick="$('#kb').focus()">
+        <div id="canvasWrapper">
+            <canvas id="main" width="200" height="200"></canvas>
+        </div>
+        <input type="text" id="kb">
+        
+        <div id="keys">
+            <svg height="80" width="40" id="left" style="margin-left: 20px">
+                <polygon points="40,0 0,40 40,80" style="fill:lime;"/>
+            </svg>
+            <svg height="80" width="40" id="right" style="margin-left: 10px">
+                <polygon points="0,0 40,40 0,80" style="fill:lime;"/>
+            </svg>
+            <svg height="60" width="80" id="up" style="margin-left: 20px">
+                <polygon points="40,0 0,40 80,40" style="fill:lime;"/>
+            </svg>    
+        </div>
+    </div>
+    
+    
+    <!-- Required libraries: jQuery and EaselJs-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    
+    <script src="world.js"></script>
+    <script src="game.js"></script>
+    <script>
+        // Start the game!
+        var g = new Game();
+    </script>
+    
+    
+    <script>
+        $(document).keydown(function(e) {
+            // Number 5 key
+            if (e.keyCode === 53) location.reload();
+        });
+    </script>
+</body>
+</html>

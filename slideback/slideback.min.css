@@ -1,0 +1,1 @@
+.transition{-webkit-transition:0.3s ease-in-out;-moz-transition:0.3s ease-in-out;-o-transition:0.3s ease-in-out;transition:0.3s ease-in-out}body{overflow:hidden}#swipe-to{background-color:grey;width:100vw;height:100vh;position:absolute;top:0px;left:-100vw}

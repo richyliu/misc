@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QUnit Example</title>
+    
+    <!-- Auto redirect to https -->
+    <script>var a=window.location;"https:"!==a.protocol&&(a.href="https:"+a.href.substring(a.protocol.length));</script>
+    
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.22.0.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script src="https://code.jquery.com/qunit/qunit-1.22.0.js"></script>
+    
+    <script src="main.js"></script>
+    <script src="implementation.js"></script>
+    <script src="unit-test.js"></script>
+    
+    <script>
+        $(document).keydown(function(e) {
+            // Number 5 key
+            if (e.keyCode === 53) location.reload();
+        });
+    </script>
+</body>
+</html>

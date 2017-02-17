@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Browser Close Protector</title>
+</head>
+
+<body>
+    <script>
+        window.setInterval(() => {
+            var date = new Date();
+            if (date.getMinutes() % 30 === 0) {
+                $('#status').innerHTML = '';
+                window.curAlert = window.setInterval(() => {
+                    if (takeBreak()) {
+                        $('#status').innerHTML = 'Right!';
+                        window.clearInterval(window.curAlert);
+                    }
+                }, 1000 * 60); // wait 1 minute until asking again
+            }
+        }, 1000 * 15); // wait 15 seconds between every check
+
+
+        function takeBreak() {
+            let a = Math.floor(Math.random() * 15)
+            let b = Math.floor(Math.random() * 15);
+            let inp = prompt(a + ' + ' + b);
+
+            return parseInt(inp) == a + b;
+        }
+    </script>
+</body>
+
+</html>
