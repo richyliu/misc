@@ -10,7 +10,7 @@
         window.setInterval(() => {
             var date = new Date();
             if (date.getMinutes() % 30 === 0) {
-                $('#status').innerHTML = '';
+                document.getElementById('status').innerHTML = '';
                 window.curAlert = window.setInterval(() => {
                     if (takeBreak()) {
                         $('#status').innerHTML = 'Right!';
@@ -22,7 +22,7 @@
 
 
         function takeBreak() {
-            let a = Math.floor(Math.random() * 15)
+            let a = Math.floor(Math.random() * 15);
             let b = Math.floor(Math.random() * 15);
             let inp = prompt(a + ' + ' + b);
 
