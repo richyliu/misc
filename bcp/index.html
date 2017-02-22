@@ -15,7 +15,7 @@
                 document.getElementById('status').innerHTML = '';
                 window.curAlert = window.setInterval(() => {
                     if (takeBreak()) {
-                        $('#status').innerHTML = 'Right!';
+                        document.getElementById('status').innerHTML = 'Right!';
                         window.clearInterval(window.curAlert);
                     }
                 }, 1000 * 60); // wait 1 minute until asking again
