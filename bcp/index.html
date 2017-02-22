@@ -17,10 +17,12 @@
                     if (takeBreak()) {
                         document.getElementById('status').innerHTML = 'Right!';
                         window.clearInterval(window.curAlert);
+                    } else {
+                        document.getElementById('status').innerHTML = 'Wrong';
                     }
                 }, 1000 * 60); // wait 1 minute until asking again
             }
-        }, 1000 * 15); // wait 15 seconds between every check
+        }, 1000 * 60); // wait 1 minute between every check
 
 
         function takeBreak() {
