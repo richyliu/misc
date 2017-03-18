@@ -6,31 +6,20 @@
 </head>
 
 <body>
-    <p id="status"></p>
-    
+
     <script>
         window.setInterval(() => {
-            var date = new Date();
-            if (date.getMinutes() % 30 === 0) {
-                document.getElementById('status').innerHTML = '';
-                window.curAlert = window.setInterval(() => {
-                    if (takeBreak()) {
-                        document.getElementById('status').innerHTML = 'Right!';
-                        window.clearInterval(window.curAlert);
-                    } else {
-                        document.getElementById('status').innerHTML = 'Wrong';
-                    }
-                }, 1000 * 60); // wait 1 minute until asking again
-            }
-        }, 1000 * 60); // wait 1 minute between every check
+            let date = new Date();
+            if (date.getMinutes() % 30 === 0) takeBreak();
+        }, 1000 * 15); // wait 15 seconds between every check
 
 
         function takeBreak() {
-            let a = Math.floor(Math.random() * 15);
-            let b = Math.floor(Math.random() * 15);
-            let inp = prompt(a + ' + ' + b);
-
-            return parseInt(inp) == a + b;
+            let start = new Date();
+            
+            while((new Date()) - start < 60 * 1000) {
+                alert(((new Date()) - start) / 1000);
+            }
         }
     </script>
 </body>
