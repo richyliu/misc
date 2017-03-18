@@ -6,21 +6,18 @@
 </head>
 
 <body>
-
     <script>
         window.setInterval(() => {
-            let date = new Date();
-            if (date.getMinutes() % 30 === 0) takeBreak();
-        }, 1000 * 15); // wait 15 seconds between every check
-
-
-        function takeBreak() {
-            let start = new Date();
-            
-            while((new Date()) - start < 60 * 1000) {
-                alert(((new Date()) - start) / 1000);
+            // if at 0 or 30 minutes of the hour
+            if (new Date().getMinutes() % 30 === 0) {
+                let start = new Date();
+                
+                // continuously alert for 60 seconds
+                while(new Date() - start < 60 * 1000) {
+                    alert((new Date() - start) / 1000);
+                }
             }
-        }
+        }, 1000 * 5); // wait 5 seconds between every check
     </script>
 </body>
 
