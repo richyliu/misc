@@ -6,15 +6,43 @@
 </head>
 
 <body>
+    <button type="button" onclick="getLocation()">Check Location</button>
+
     <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    let lat = Math.round(position.coords.latitude * 1000) / 1000;
+                    let long = Math.round(position.coords.longitude * 1000) / 1000;
+                    console.log(lat);
+                    console.log(long);
+                    
+                    // botball house
+                    if (lat == 37.354 && long == -122.075) {
+                        console.log('At botball!');
+                        window.atBotball = true;
+                    } else {
+                        console.log('Not at botball!');
+                        window.atBotball = false;
+                    }
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+        
+        
         window.setInterval(() => {
+            let d = new Date();
             // if at 0 or 30 minutes of the hour
-            if (new Date().getMinutes() % 30 === 0) {
-                let start = new Date();
-                
-                // continuously alert for 60 seconds
-                while(new Date() - start < 60 * 1000) {
-                    alert((new Date() - start) / 1000);
+            if (d.getMinutes() % 30 === 0) {
+                if (window.atBotball) {
+                    getLocation();
+                } else {
+                    // continuously alert for 60 seconds
+                    while (new Date() - d < 60 * 1000) {
+                        alert((new Date() - d) / 1000);
+                    }
                 }
             }
         }, 1000 * 5); // wait 5 seconds between every check
