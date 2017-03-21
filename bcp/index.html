@@ -6,41 +6,26 @@
 </head>
 
 <body>
-    <button type="button" onclick="getLocation()">Check Location</button>
+    <button type="button" onclick="window.disableAlert = true">Turn off</button>
 
     <script>
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    let lat = Math.round(position.coords.latitude * 1000) / 1000;
-                    let long = Math.round(position.coords.longitude * 1000) / 1000;
-                    console.log(lat);
-                    console.log(long);
-                    
-                    console.trace();
-                    // botball house
-                    if (lat == 37.354 && long == -122.075) {
-                        console.log('At botball!');
-                        window.atBotball = true;
-                    } else {
-                        console.log('Not at botball!');
-                        window.atBotball = false;
-                    }
-                });
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-            }
-        }
+        window.disableAlert = false;
         
         
         window.setInterval(() => {
             let d = new Date();
+            
             // if at 0 or 30 minutes of the hour
             if (d.getMinutes() % 30 === 0) {
-                console.log(window.atBotball);
-                
-                if (window.atBotball) {
-                    getLocation();
+                // if at botball then check location to make sure still at botball
+                if (window.disableAlert) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        // botball house (multiplied by 1000 to get 3 decimal precision)
+                        window.disableAlert =
+                            Math.round(pos.coords.latitude * 1000) == 37354 &&
+                            Math.round(pos.coords.longitude * 1000) == -122075;
+                    });
+                // if not at botball start normal alert
                 } else {
                     // continuously alert for 60 seconds
                     while (new Date() - d < 60 * 1000) {
