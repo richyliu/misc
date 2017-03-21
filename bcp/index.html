@@ -17,6 +17,7 @@
                     console.log(lat);
                     console.log(long);
                     
+                    console.trace();
                     // botball house
                     if (lat == 37.354 && long == -122.075) {
                         console.log('At botball!');
@@ -36,6 +37,8 @@
             let d = new Date();
             // if at 0 or 30 minutes of the hour
             if (d.getMinutes() % 30 === 0) {
+                console.log(window.atBotball);
+                
                 if (window.atBotball) {
                     getLocation();
                 } else {
