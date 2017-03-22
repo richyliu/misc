@@ -6,30 +6,39 @@
 </head>
 
 <body>
-    <button type="button" onclick="window.disableAlert = true">Turn off</button>
+    <button type="button" onclick="checkDisableAlert()">Check if at Botball</button>
 
     <script>
         window.disableAlert = false;
+        
+        function checkDisableAlert() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                // botball house (multiplied by 1000 to get 3 decimal precision)
+                window.disableAlert =
+                    Math.round(pos.coords.latitude * 1000) == 37354 &&
+                    Math.round(pos.coords.longitude * 1000) == -122075;
+            });
+        }
         
         
         window.setInterval(() => {
             let d = new Date();
             
-            // if at 0 or 30 minutes of the hour
-            if (d.getMinutes() % 30 === 0) {
+            if (d.getMinutes() % 15 === 0) {
                 // if at botball then check location to make sure still at botball
                 if (window.disableAlert) {
-                    navigator.geolocation.getCurrentPosition(pos => {
-                        // botball house (multiplied by 1000 to get 3 decimal precision)
-                        window.disableAlert =
-                            Math.round(pos.coords.latitude * 1000) == 37354 &&
-                            Math.round(pos.coords.longitude * 1000) == -122075;
-                    });
-                // if not at botball start normal alert
+                    checkDisableAlert();
                 } else {
-                    // continuously alert for 60 seconds
-                    while (new Date() - d < 60 * 1000) {
-                        alert((new Date() - d) / 1000);
+                    // continuously alert for 60 seconds every 30 minutes
+                    if (d.getMinutes() % 30 === 0) {
+                        while (new Date() - d < 60 * 1000) {
+                            alert((new Date() - d) / 1000);
+                        }
+                    // take short eye break every 15 minutes for 10 seconds
+                    } else {
+                        while (new Date() - d < 60 * 1000) {
+                            alert('Take a quick eye break! ' + ((new Date() - d) / 1000));
+                        }
                     }
                 }
             }
