@@ -35,13 +35,13 @@
                     // alert for 60 seconds every 30 minutes or 10 seconds every 15 minutes
                     while (elapsedTime < 60) {
                         elapsedTime = (new Date() - d) * 1000;
-                        if ((minutesMod30 !== 0 && elapsedTime < 15) || minutesMod30 === 0) {
+                        if ((minutesMod30 == 15 && elapsedTime < 10) || minutesMod30 === 0) {
                             alert(elapsedTime);
                         }
                     }
                 }
             }
-        }, 1000 * 46); // wait 46 seconds between every check
+        }, 1000 * 5); // wait 5 seconds between every check
     </script>
 </body>
 
