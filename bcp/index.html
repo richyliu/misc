@@ -31,13 +31,19 @@
                     checkDisableAlert();
                 } else {
                     let elapsedTime = (new Date() - d) / 1000;
-                    let minutesMod30 = d.getMinutes() % 30;
-                    // alert for 60 seconds every 30 minutes or 10 seconds every 15 minutes
-                    while (elapsedTime < 60) {
-                        if ((minutesMod30 == 15 && elapsedTime < 10) || minutesMod30 === 0) {
+                    
+                    // continuously alert for 60 seconds every 30 minutes
+                    if (d.getMinutes() % 30 === 0) {
+                        while (elapsedTime < 60) {
                             alert(elapsedTime);
+                            elapsedTime = (new Date() - d) / 1000;
                         }
-                        elapsedTime = (new Date() - d) / 1000;
+                    // take short eye break every 15 minutes for 10 seconds
+                    } else {
+                        while (elapsedTime < 15) {
+                            alert(elapsedTime);
+                            elapsedTime = (new Date() - d) / 1000;
+                        }
                     }
                 }
             }
