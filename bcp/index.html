@@ -2,49 +2,20 @@
 <html>
 
 <head>
-    <title>Browser Close Protector</title>
+    <title>Take a break!</title>
 </head>
 
 <body>
-    <button type="button" onclick="checkDisableAlert()">Check if at Botball</button>
-
     <script>
-        window.disableAlert = false;
-        
-        
-        function checkDisableAlert() {
-            navigator.geolocation.getCurrentPosition(pos => {
-                // botball house (multiplied by 1000 to get 3 decimal precision)
-                window.disableAlert =
-                    Math.round(pos.coords.latitude * 1000) == 37354 &&
-                    Math.round(pos.coords.longitude * 1000) == -122075;
-            });
-        }
-        
-        
         window.setInterval(() => {
             let d = new Date();
             
-            if (d.getMinutes() % 15 === 0) {
-                // if at botball then check location to make sure still at botball
-                if (window.disableAlert) {
-                    checkDisableAlert();
-                } else {
-                    let elapsedTime = (new Date() - d) / 1000;
-                    
-                    // continuously alert for 60 seconds every 30 minutes
-                    if (d.getMinutes() % 30 === 0) {
-                        while (elapsedTime < 60) {
-                            alert(elapsedTime);
-                            elapsedTime = (new Date() - d) / 1000;
-                        }
-                    // take short eye break every 15 minutes for 10 seconds
-                    } else {
-                        while (elapsedTime < 15) {
-                            alert(elapsedTime);
-                            elapsedTime = (new Date() - d) / 1000;
-                        }
-                    }
+            if (d.getMinutes() % 30 === 0) {
+                let elapsedTime = 0;
+                
+                while (elapsedTime < 60) {
+                    alert(elapsedTime);
+                    elapsedTime = (new Date() - d) / 1000;
                 }
             }
         }, 1000 * 60); // wait 60 seconds between every check
