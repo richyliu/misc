@@ -6,13 +6,42 @@
 </head>
 
 <body>
+    <button type="button" id="btn">Skip next break</button>
+    
     <script>
+        window.skipBreak = false;
+        document.getElementById('btn').onclick = () => {
+            let d = new Date();
+            
+            // less than 3 minutes away from actual break
+            if (30 - d.getMinutes() % 30 < 3) {
+                window.skipBreak = true;
+                let elapsedTime = 0;
+                
+                // take short break of 15 seconds
+                while (elapsedTime < 15) {
+                    alert(elapsedTime);
+                    elapsedTime = (new Date() - d) / 1000;
+                }
+            } else {
+                alert('Skip break denied!');
+            }
+        };
+        
         window.setInterval(() => {
             let d = new Date();
             
+            // break every 30 minutes
             if (d.getMinutes() % 30 === 0) {
+                // skip if skipBreak set to true
+                if (window.skipBreak) {
+                    window.skipBreak = false;
+                    return;
+                }
+                
                 let elapsedTime = 0;
                 
+                // continously alert for 60 seconds
                 while (elapsedTime < 60) {
                     alert(elapsedTime);
                     elapsedTime = (new Date() - d) / 1000;
