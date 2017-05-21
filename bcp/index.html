@@ -13,8 +13,8 @@
         document.getElementById('btn').onclick = () => {
             let d = new Date();
             
-            // less than 3 minutes away from actual break
-            if (30 - d.getMinutes() % 30 < 3) {
+            // less than 5 minutes away from actual break
+            if (30 - d.getMinutes() % 30 < 5) {
                 window.skipBreak = true;
                 let elapsedTime = 0;
                 
