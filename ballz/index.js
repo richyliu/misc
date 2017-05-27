@@ -246,7 +246,133 @@ blocks[3][6] = 3;
 blocks[4][7] = 20;
 blocks[3][3] = 39;
 blocks[0][3] = 200;
-blocks[1][6] = 200;
 releaseBalls(10, Math.PI * -0.7);
 
-requestAnimationFrame(draw);
+// start drawing the canvas
+// requestAnimationFrame(draw);
+
+
+
+
+// module aliases
+let Engine = Matter.Engine,
+    Render = Matter.Render,
+    World = Matter.World,
+    Bodies = Matter.Bodies,
+    Events = Matter.Events;
+
+// create an engine
+let engine = Engine.create();
+
+// create a renderer
+let render = Render.create({
+    element: document.body,
+    engine: engine,
+    options: {
+        width: 330,
+        height: 470
+    }
+});
+
+
+engine.world.gravity.y = 0;
+engine.world.gravity.scale = 0;
+engine.world.bounds = {
+    min: {
+        x: -10,
+        y: -10
+    },
+    max: {
+        x: 1000,
+        y: 1000
+    }
+};
+
+
+
+World.add(engine.world, [
+    Bodies.rectangle(-2.5, HEIGHT/2, 5, HEIGHT, { id: 'wall0', isStatic: true, restitution: 1, frictionStatic: 0 }), // left wall
+    Bodies.rectangle(WIDTH+2.5, HEIGHT/2, 5, HEIGHT, { id: 'wall1', isStatic: true, restitution: 1, frictionStatic: 0 }), // right wall
+    Bodies.rectangle(WIDTH/2, -2.5, WIDTH, 5, { id: 'wall2', isStatic: true, restitution: 1, frictionStatic: 0 }), // top wall
+    Bodies.rectangle(WIDTH/2, HEIGHT+2.5, WIDTH, 5, { id: 'bottom', isStatic: true, restitution: 1, frictionStatic: 0 }), // bottom wall
+]);
+
+// draw blocks
+for (let x = 0; x < 6; x++) {
+    for (let y = 0; y < 8; y++) {
+        if (blocks[x][y] > 0) {
+            // add all of the bodies to the world
+            // all x y coords refrence the center of the body
+            World.add(engine.world, Bodies.rectangle(
+                TOTAL_BLOCK_SIZE * x + TOTAL_BLOCK_SIZE/2,
+                TOTAL_BLOCK_SIZE * y + TOTAL_BLOCK_SIZE/2,
+                BLOCK_SIZE,
+                BLOCK_SIZE,
+                {
+                    isStatic: true,
+                    id: ('00'+ (x*10+y)).slice(-2), // x is first digits, y second
+                    render: {
+                        fillStyle: '#245465'
+                    }
+                }
+            ));
+        }
+    }
+}
+
+let ball = Bodies.circle(RELEASE_X, RELEASE_Y, BALL_RADIUS, {
+    force: {
+        x: -0.001,
+        y: -0.0015
+    },
+    friction: 0,
+    frictionStatic: 0,
+    frictionAir: 0,
+    restitution: 1,
+    inertia: Infinity,
+    id: 'ba0',
+    render: {
+        fillStyle: 'green'
+    },
+});
+balls = [];
+balls.push(ball);
+
+World.add(engine.world, ball);
+
+
+Events.on(engine, 'collisionEnd', event => {
+    // contains the ids of both the objects that collided
+    let collisionIds = event.pairs[0].id.split('_');
+    // id of the object the ball collided into
+    let coll = {};
+    let ballId = '';
+    
+    // do nothing if hit wall
+    if (collisionIds[0].slice(0, 4) == 'wall' || collisionIds[1].slice(0, 4) == 'wall') return;
+    
+    // kill ball if hit bottom
+    if (collisionIds[0].slice(0, 6) == 'bottom') {
+        World.remove(engine.world, balls[collisionIds[1].slice(2)]);
+    } else if (collisionIds[1].slice(0, 6) == 'bottom') {
+        World.remove(engine.world, balls[collisionIds[0].slice(2)]);
+    }
+    
+    
+    if (collisionIds[0].slice(0, 2) == 'ba') {
+        ballId = collisionIds[0].slice(2);
+        coll = { x: parseInt(collisionIds[1].slice(0, 1)), y: parseInt(collisionIds[1].slice(1))};
+    } else {
+        ballId = collisionIds[1].slice(2);
+        coll = { x: parseInt(collisionIds[0].slice(0, 1)), y: parseInt(collisionIds[0].slice(1))};
+    }
+    
+    
+});
+
+
+// run the engine
+Engine.run(engine);
+
+// run the renderer
+Render.run(render);
