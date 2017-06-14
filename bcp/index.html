@@ -7,6 +7,7 @@
 
 <body>
     <button type="button" id="btn">Skip next break</button>
+    <p id="skip-break">Skip break: no</p>
     
     <script>
         window.skipBreak = false;
@@ -16,6 +17,7 @@
             // less than 5 minutes away from actual break
             if (30 - d.getMinutes() % 30 < 5) {
                 window.skipBreak = true;
+                document.getElementById('skip-break').innerHTML = 'Skip break: yes';
                 let elapsedTime = 0;
                 
                 // take short break of 15 seconds
@@ -36,6 +38,7 @@
                 // skip if skipBreak set to true
                 if (window.skipBreak) {
                     window.skipBreak = false;
+                    document.getElementById('skip-break').innerHTML = 'Skip break: no';
                     return;
                 }
                 
