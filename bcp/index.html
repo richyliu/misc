@@ -46,7 +46,16 @@
                 
                 // continously alert for 60 seconds
                 while (elapsedTime < 60) {
-                    alert(elapsedTime);
+                    let response = prompt('Enter 1 to use your daily free pass. ' + Math.floor(elapsedTime) + '/60 sec');
+                    if (response == '1') {
+                        // date of last free pass used isn't today
+                        if (localStorage.getItem('last-free-pass') != d.getDate()) {
+                            alert('Using your daily free pass.');
+                            localStorage.setItem('last-free-pass', d.getDate());
+                        } else {
+                            alert('Unable to use daily free pass.');
+                        }
+                    }
                     elapsedTime = (new Date() - d) / 1000;
                 }
             }
