@@ -14,8 +14,8 @@
         document.getElementById('btn').onclick = () => {
             let d = new Date();
             
-            // less than 5 minutes away from actual break
-            if (30 - d.getMinutes() % 30 < 5) {
+            // less than 5 minutes away from actual break and haven't already skipped break
+            if (30 - d.getMinutes() % 30 < 5 && !window.skipBreak) {
                 window.skipBreak = true;
                 document.getElementById('skip-break').innerHTML = 'Skip break: yes';
                 let elapsedTime = 0;
