@@ -8,9 +8,21 @@
 <body>
     <button type="button" id="btn">Skip next break</button>
     <p id="skip-break">Skip break: no</p>
+    <button type="button" id="status">Currently: On</button>
     
     <script>
         window.skipBreak = false;
+        window.turnOff = false;
+        
+        document.getElementById('status').onclick = () => {
+            if (window.turnOff) {
+                document.getElementById('status').innerHTML = 'Currently: On';
+            } else {
+                document.getElementById('status').innerHTML = 'Currently: Off';
+            }
+            window.turnOff = !window.turnOff;
+        }
+        
         document.getElementById('btn').onclick = () => {
             let d = new Date();
             
@@ -34,7 +46,7 @@
             let d = new Date();
             
             // break every 30 minutes
-            if (d.getMinutes() % 30 === 0) {
+            if (d.getMinutes() % 30 === 0 && !window.turnOff) {
                 // skip if skipBreak set to true
                 if (window.skipBreak) {
                     window.skipBreak = false;
