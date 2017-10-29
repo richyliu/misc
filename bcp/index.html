@@ -7,6 +7,7 @@
 
 <body>
     <button type="button" id="btn">Skip next break</button>
+    <button type="button" id="btn-free">Free skip next break</button>
     <p id="skip-break">Skip break: no</p>
     <button type="button" id="status">Currently: On</button>
     
@@ -40,6 +41,10 @@
             } else {
                 alert('Skip break denied!');
             }
+        };
+        
+        document.getElementById('btn-free').onclick = () => {
+            window.skipBreak = true;
         };
         
         window.setInterval(() => {
