@@ -44,8 +44,10 @@
         };
         
         document.getElementById('btn-free').onclick = () => {
-            window.skipBreak = true;
-            document.getElementById('skip-break').innerHTML = 'Skip break: yes';
+            if (confirm('Are you sure you want to skip the next break?')) {
+                window.skipBreak = true;
+                document.getElementById('skip-break').innerHTML = 'Skip break: yes';
+            }
         };
         
         window.setInterval(() => {
