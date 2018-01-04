@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+if [[ $# -eq 0 ]]; then
+    echo "Usage: gitcommit <commit message> ..."
+    exit
+fi
+
+git add --all
+git commit -m "$*"
+git push

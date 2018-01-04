@@ -1,5 +1,13 @@
 /*! Slideback v0.0.1 | (c) Richard Liu | MIT License */
 
+/*
+    BUGS:
+    - works on fullscreen ios, but not on normal
+    
+    FEATURES:
+    - swipe forwards
+*/
+
 // (function(window, document) {
     var listenToTouch = false;
     var xStart = -1;
