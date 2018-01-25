@@ -50,6 +50,10 @@
             }
         };
         
+        window.onbeforeunload = () => {
+            return 'Are you sure you want to exit?';
+        };
+        
         window.setInterval(() => {
             let d = new Date();
             
