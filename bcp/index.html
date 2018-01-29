@@ -73,12 +73,12 @@
                     alert(elapsedTime);
                     elapsedTime = (new Date() - d) / 1000;
                 }
-            // small break every 10 minutes
+            // small break every 15 minutes
             } else if (d.getMinutes() % 15 === 0) {
                 let elapsedTime = 0;
                 
-                // continously alert for 15 seconds
-                while (elapsedTime < 15) {
+                // continously alert for 10 seconds
+                while (elapsedTime < 10) {
                     alert(elapsedTime);
                     elapsedTime = (new Date() - d) / 1000;
                 }
