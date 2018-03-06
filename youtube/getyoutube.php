@@ -4,50 +4,87 @@
 <head>
     <meta charset="utf-8">
     <title>Download Youtube</title>
+
+    <style media="screen">
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+        
+        tr {
+            width: 100%;
+        }
+        a {
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+            
+    </style>
+
 </head>
 
 <body>
-    <a id="url"></a>
+    <table>
+        <thead>
+            <tr>
+                <th>Quality</th>
+                <th>Url</th>
+            </tr>
+        </thead>
+        <tbody id="urls"></tbody>
+    </table>
     
+
+    <?php
+        $file = file_get_contents($_GET["url"]);
+        $file = explode('<div id="player-api" class="player-width player-height off-screen-target player-api" tabIndex="-1"></div>', $file)[1];
+        $file = explode('<div id="watch-queue-mole"', $file)[0];
+        echo $file;
+    ?>
+
     <script>
-        let rawData = `<?php
-            $file = file_get_contents($_POST["url"]);
-            $file = explode('var ytplayer = ytplayer || {};ytplayer.config = ', $file)[1];
-            $file = explode('url_encoded_fmt_stream_map":"', $file)[1];
-            $file = explode('","', $file)[0];
-            echo $file;
-        ?>`;
-        let data = rawData;
-        console.log(data);
+        let data = ytplayer.config.args.url_encoded_fmt_stream_map;
+        console.log('data', data);
         
         
         let urls = [];
-        for (let url of data.split(',')) {
+        for (let urlWithData of data.split(',')) {
             let curMap = {};
-            url.split('\u0026').forEach(item => {
+            urlWithData.split('\u0026').forEach(item => {
                 curMap[item.split('=')[0]] = decodeURIComponent(item.split('=')[1]);
             });
         
             urls.push(curMap);
         }
-        console.log(urls);
-        console.log(urls[0].url);
-        document.getElementById('url').href = urls[0].url;
-        document.getElementById('url').innerHTML = urls[0].url;
+        console.log('urls', urls);
+        console.log('first url', urls[0].url);
         
-        
-        window.onmousedown = copyText;
-        window.ontouchstart = copyText;
-        
-        function copyText() {
-            let myelement = document.getElementById('url');
-            let range = document.createRange();
-
-            range.selectNode(myelement);
-            window.getSelection().addRange(range);
-            
-            a = document.execCommand('copy');
-        }
+        document.getElementById('urls').innerHTML = urls.reduce((total, item) => {
+            if (typeof total != 'string') {
+                total = `
+                    <tr>
+                        <td>${total.quality}</td>
+                        <td><a href="${total.url}" target="_blank">${total.url}</td>
+                    </tr>
+                `;
+            } 
+            return total + `
+                <tr>
+                    <td>${item.quality}</td>
+                    <td><a href="${item.url}" target="_blank">${item.url}</td>
+                </tr>
+            `;
+        });
     </script>
 </body>
 
