@@ -47,9 +47,9 @@
 
     <?php
         $file = file_get_contents($_GET["url"]);
-        $file = explode('<div id="player-api" class="player-width player-height off-screen-target player-api" tabIndex="-1"></div>', $file)[1];
-        $file = explode('<div id="watch-queue-mole"', $file)[0];
-        echo $file;
+        $file = explode('var ytplayer = ytplayer || {};', $file)[1];
+        $file = explode('ytplayer.load', $file)[0];
+        echo '<script>let ytplayer = {};' . $file . '</script>';
     ?>
 
     <script>
