@@ -8,19 +8,11 @@
 </head>
 
 <body>
-    <form class="" action="http://lg9393.myftp.org:9080/misc/youtube/getyoutube.php" method="get">
-        <input type="text" name="url">
-        <input type="submit">
-    </form>
-    <p>Use this from inside LiuFamily</p>
-    <form class="" action="http://10.0.1.11/misc/youtube/getyoutube.php" method="get">
-        <input type="text" name="url">
-        <input type="submit">
-    </form>
+    <h1>Youtube downloader</h1>
+    <p>Type the letter "j" and paste the following command into your browser url box (after you have loaded the video)</p>
+    <p>avascript:u=ytplayer.config.args.url_encoded_fmt_stream_map.split(',')[0];u.indexOf('hd720')&gt;-1 ? window.location=decodeURIComponent(u.slice(u.indexOf('url')+4,u.indexOf('&amp;', u.indexOf('url')))) : alert('No hd720 url found')</p>
 
-    <p>ytplayer.config.args.url_encoded_fmt_stream_map.split(',')[0].split('=').forEach(a =&gt; console.log(decodeURIComponent(a)));</p>
-
-    <a href="https://y2mate.com">https://y2mate.com</a>
+    <p>Use this, it's like the above command but more convinient on a mobile: <a href="https://y2mate.com">https://y2mate.com</a></p>
 </body>
 
 </html>
